@@ -58,13 +58,130 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock", "[DenseMatrixBlock]", ((int BR, int B
   REQUIRE(mat->numElementRows() == camSize * numCams);
   REQUIRE(mat->numElementCols() == pointSize * numPoints);
 
+  REQUIRE(mat->numElementRows() == mat->mat().rows());
+  REQUIRE(mat->numElementCols() == mat->mat().cols());
+
+  MatT mat2(mat->blockDescriptor());
+  REQUIRE(mat2.numElementRows() == mat->mat().rows());
+  REQUIRE(mat2.numElementCols() == mat->mat().cols());
+  REQUIRE(mat2.numElementRows() == mat2.mat().rows());
+  REQUIRE(mat2.numElementCols() == mat2.mat().cols());
+
+  MatT mat3(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat3.numElementRows() == mat->mat().rows());
+  REQUIRE(mat3.numElementCols() == mat->mat().cols());
+  REQUIRE(mat3.numElementRows() == mat3.mat().rows());
+  REQUIRE(mat3.numElementCols() == mat3.mat().cols());
+
+  MatT mat4;
+  mat4.resize(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat4.numElementRows() == mat->mat().rows());
+  REQUIRE(mat4.numElementCols() == mat->mat().cols());
+  REQUIRE(mat4.numElementRows() == mat4.mat().rows());
+  REQUIRE(mat4.numElementCols() == mat4.mat().cols());
+
+  MatT mat5;
+  mat5.resize(mat->blockDescriptor());
+  REQUIRE(mat5.numElementRows() == mat->mat().rows());
+  REQUIRE(mat5.numElementCols() == mat->mat().cols());
+  REQUIRE(mat5.numElementRows() == mat5.mat().rows());
+  REQUIRE(mat5.numElementCols() == mat5.mat().cols());
+
   for (int i = 0; i < mat->numBlocksRow(); i++) {
     REQUIRE(mat->rowBlockSize(i) == camSize);
+    REQUIRE(mat2.rowBlockSize(i) == camSize);
+    REQUIRE(mat3.rowBlockSize(i) == camSize);
+    REQUIRE(mat4.rowBlockSize(i) == camSize);
+    REQUIRE(mat5.rowBlockSize(i) == camSize);
   }
   for (int i = 0; i < mat->numBlocksCol(); i++) {
     REQUIRE(mat->colBlockSize(i) == pointSize);
+    REQUIRE(mat2.colBlockSize(i) == pointSize);
+    REQUIRE(mat3.colBlockSize(i) == pointSize);
+    REQUIRE(mat4.colBlockSize(i) == pointSize);
+    REQUIRE(mat5.colBlockSize(i) == pointSize);
   }
 }
+
+TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock-Square", "[DenseMatrixBlock]", ((int BR, int NBR), BR, NBR),
+  (camSize, numCams),
+  (camSize, mat::Dynamic),
+  (mat::Dynamic, numCams),
+  (mat::Dynamic, mat::Dynamic)
+)
+{
+
+  using MatT = mat::DenseMatrixBlock<double, BR, BR, NBR, NBR>;
+
+  std::unique_ptr<MatT> mat;
+  SECTION("default ctor") {
+    mat.reset(new MatT());
+    REQUIRE(mat->numBlocksRow() == (NBR == mat::Dynamic ? 0 : NBR));
+    REQUIRE(mat->numBlocksCol() == (NBR == mat::Dynamic ? 0 : NBR));
+
+    REQUIRE(mat->mat().rows() == (NBR == mat::Dynamic || BR == mat::Dynamic ? 0 : camSize * numCams));
+    REQUIRE(mat->mat().cols() == (NBR == mat::Dynamic || BR == mat::Dynamic ? 0 : camSize * numCams));
+
+    mat->resizeSquare(camSize, numCams);
+
+  }
+  SECTION("sized ctor") {
+    mat.reset(new MatT(MatT::squareMatrix(camSize)));
+    mat->resizeSquare(camSize, numCams);
+  }
+  SECTION("sized ctor") {
+    mat.reset(new MatT(MatT::squareMatrix(camSize, numCams)));
+    mat->resizeSquare(camSize, numCams);
+  }
+
+  REQUIRE(mat->numElementRows() == camSize * numCams);
+  REQUIRE(mat->numElementCols() == camSize * numCams);
+
+  REQUIRE(mat->numElementRows() == mat->mat().rows());
+  REQUIRE(mat->numElementCols() == mat->mat().cols());
+
+  MatT mat2(MatT::squareMatrix(mat->blockDescriptor().rowDescriptionCSPtr()));
+  REQUIRE(mat2.numElementRows() == mat->mat().rows());
+  REQUIRE(mat2.numElementCols() == mat->mat().cols());
+  REQUIRE(mat2.numElementRows() == mat2.mat().rows());
+  REQUIRE(mat2.numElementCols() == mat2.mat().cols());
+
+  MatT mat3(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat3.numElementRows() == mat->mat().rows());
+  REQUIRE(mat3.numElementCols() == mat->mat().cols());
+  REQUIRE(mat3.numElementRows() == mat3.mat().rows());
+  REQUIRE(mat3.numElementCols() == mat3.mat().cols());
+
+  MatT mat4;
+  mat4.resize(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat4.numElementRows() == mat->mat().rows());
+  REQUIRE(mat4.numElementCols() == mat->mat().cols());
+  REQUIRE(mat4.numElementRows() == mat4.mat().rows());
+  REQUIRE(mat4.numElementCols() == mat4.mat().cols());
+
+  MatT mat5;
+  mat5.resize(mat->blockDescriptor());
+  REQUIRE(mat5.numElementRows() == mat->mat().rows());
+  REQUIRE(mat5.numElementCols() == mat->mat().cols());
+  REQUIRE(mat5.numElementRows() == mat5.mat().rows());
+  REQUIRE(mat5.numElementCols() == mat5.mat().cols());
+
+  for (int i = 0; i < mat->numBlocksRow(); i++) {
+    REQUIRE(mat->rowBlockSize(i) == camSize);
+    REQUIRE(mat2.rowBlockSize(i) == camSize);
+    REQUIRE(mat3.rowBlockSize(i) == camSize);
+    REQUIRE(mat4.rowBlockSize(i) == camSize);
+    REQUIRE(mat5.rowBlockSize(i) == camSize);
+  }
+  for (int i = 0; i < mat->numBlocksCol(); i++) {
+    REQUIRE(mat->colBlockSize(i) == camSize);
+    REQUIRE(mat2.colBlockSize(i) == camSize);
+    REQUIRE(mat3.colBlockSize(i) == camSize);
+    REQUIRE(mat4.colBlockSize(i) == camSize);
+    REQUIRE(mat5.colBlockSize(i) == camSize);
+  }
+}
+
 
 
 TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, int NBC), NBR, NBC),
@@ -97,13 +214,126 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, i
     mat->resize(camSizeVar, numCams, pointSizeVar, numPoints);
   }
   
-  REQUIRE(mat->numElementRows() == camSize * numCams); // vector are same size on purpose!
+  REQUIRE(mat->numElementRows() == camSize * numCams);
   REQUIRE(mat->numElementCols() == pointSize * numPoints);
+
+  REQUIRE(mat->numElementRows() == mat->mat().rows());
+  REQUIRE(mat->numElementCols() == mat->mat().cols());
+
+  MatT mat2(mat->blockDescriptor());
+  REQUIRE(mat2.numElementRows() == mat->mat().rows());
+  REQUIRE(mat2.numElementCols() == mat->mat().cols());
+  REQUIRE(mat2.numElementRows() == mat2.mat().rows());
+  REQUIRE(mat2.numElementCols() == mat2.mat().cols());
+
+  MatT mat3(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat3.numElementRows() == mat->mat().rows());
+  REQUIRE(mat3.numElementCols() == mat->mat().cols());
+  REQUIRE(mat3.numElementRows() == mat3.mat().rows());
+  REQUIRE(mat3.numElementCols() == mat3.mat().cols());
+
+  MatT mat4;
+  mat4.resize(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat4.numElementRows() == mat->mat().rows());
+  REQUIRE(mat4.numElementCols() == mat->mat().cols());
+  REQUIRE(mat4.numElementRows() == mat4.mat().rows());
+  REQUIRE(mat4.numElementCols() == mat4.mat().cols());
+
+  MatT mat5;
+  mat5.resize(mat->blockDescriptor());
+  REQUIRE(mat5.numElementRows() == mat->mat().rows());
+  REQUIRE(mat5.numElementCols() == mat->mat().cols());
+  REQUIRE(mat5.numElementRows() == mat5.mat().rows());
+  REQUIRE(mat5.numElementCols() == mat5.mat().cols());
 
   for (int i = 0; i < mat->numBlocksRow(); i++) {
     REQUIRE(mat->rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat2.rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat3.rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat4.rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat5.rowBlockSize(i) == camSizeVar[i]);
   }
   for (int i = 0; i < mat->numBlocksCol(); i++) {
     REQUIRE(mat->colBlockSize(i) == pointSizeVar[i]);
+    REQUIRE(mat2.colBlockSize(i) == pointSizeVar[i]);
+    REQUIRE(mat3.colBlockSize(i) == pointSizeVar[i]);
+    REQUIRE(mat4.colBlockSize(i) == pointSizeVar[i]);
+    REQUIRE(mat5.colBlockSize(i) == pointSizeVar[i]);
+  }
+}
+
+TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar-Square", "[DenseMatrixBlock]", ((int NBR), NBR),
+  (numCams),
+  (mat::Dynamic)
+)
+{
+  using MatT = mat::DenseMatrixBlock<double, mat::Variable, mat::Variable, NBR, NBR>;
+  std::unique_ptr<MatT> mat;
+  SECTION("default ctor") {
+    mat.reset(new MatT());
+    REQUIRE(mat->numBlocksRow() == (NBR == mat::Dynamic ? 0 : NBR));
+    REQUIRE(mat->numBlocksCol() == (NBR == mat::Dynamic ? 0 : NBR));
+
+    REQUIRE(mat->mat().rows() == 0);
+    REQUIRE(mat->mat().cols() == 0);
+
+    mat->resize(camSizeVar, numCams, camSizeVar, numCams);
+
+  }
+
+  SECTION("sized ctor") {
+    mat.reset(new MatT(MatT::squareMatrix(camSizeVar)));
+    mat->resizeSquare(camSizeVar, numCams);
+  }
+  SECTION("sized ctor") {
+    mat.reset(new MatT(MatT::squareMatrix(camSizeVar, numCams)));
+    mat->resizeSquare(camSizeVar, numCams);
+  }
+
+  REQUIRE(mat->numElementRows() == camSize * numCams);
+  REQUIRE(mat->numElementCols() == camSize * numCams);
+
+  REQUIRE(mat->numElementRows() == mat->mat().rows());
+  REQUIRE(mat->numElementCols() == mat->mat().cols());
+
+  MatT mat2(mat->blockDescriptor());
+  REQUIRE(mat2.numElementRows() == mat->mat().rows());
+  REQUIRE(mat2.numElementCols() == mat->mat().cols());
+  REQUIRE(mat2.numElementRows() == mat2.mat().rows());
+  REQUIRE(mat2.numElementCols() == mat2.mat().cols());
+
+  MatT mat3(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat3.numElementRows() == mat->mat().rows());
+  REQUIRE(mat3.numElementCols() == mat->mat().cols());
+  REQUIRE(mat3.numElementRows() == mat3.mat().rows());
+  REQUIRE(mat3.numElementCols() == mat3.mat().cols());
+
+  MatT mat4;
+  mat4.resize(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr());
+  REQUIRE(mat4.numElementRows() == mat->mat().rows());
+  REQUIRE(mat4.numElementCols() == mat->mat().cols());
+  REQUIRE(mat4.numElementRows() == mat4.mat().rows());
+  REQUIRE(mat4.numElementCols() == mat4.mat().cols());
+
+  MatT mat5;
+  mat5.resize(mat->blockDescriptor());
+  REQUIRE(mat5.numElementRows() == mat->mat().rows());
+  REQUIRE(mat5.numElementCols() == mat->mat().cols());
+  REQUIRE(mat5.numElementRows() == mat5.mat().rows());
+  REQUIRE(mat5.numElementCols() == mat5.mat().cols());
+
+  for (int i = 0; i < mat->numBlocksRow(); i++) {
+    REQUIRE(mat->rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat2.rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat3.rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat4.rowBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat5.rowBlockSize(i) == camSizeVar[i]);
+  }
+  for (int i = 0; i < mat->numBlocksCol(); i++) {
+    REQUIRE(mat->colBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat2.colBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat3.colBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat4.colBlockSize(i) == camSizeVar[i]);
+    REQUIRE(mat5.colBlockSize(i) == camSizeVar[i]);
   }
 }

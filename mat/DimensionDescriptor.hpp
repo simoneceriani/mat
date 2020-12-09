@@ -123,22 +123,24 @@ namespace mat {
   }
 
   template<int NB>
-  void DimensionDescriptor<mat::Variable, NB>::setBlockSize(const std::vector<int>& bi) 
-  {
-    this->_bi = bi;
-    DimensionDescriptorBase::setNumBlocks(int(bi.size()));
-    updateStarts();
-  }
-
-  template<int NB>
   void DimensionDescriptor<mat::Variable, NB>::resize(const std::vector<int>& bi, int nb)
   {
-    this->setBlockSize(bi);
-    this->setNumBlocks(nb);
+    assert(int(bi.size()) == nb);
+    this->resize(bi);
   }
 
   template<int NB>
-  void DimensionDescriptor<mat::Variable, NB>::setNumBlocks(int nb) {
-    assert(this->numBlocks() == nb);
+  void DimensionDescriptor<mat::Variable, NB>::resize(const std::vector<int>& bi) {
+    this->_bi = bi;
+    this->setNumBlocks(int(bi.size()));
+    this->updateStarts();
   }
+
+  template<int NB>
+  void DimensionDescriptor<mat::Variable, NB>::addBlock(int b) {
+    this->_bi.push_back(b);
+    this->_bi_start.push_back(this->_bi_start.back() + b);
+    this->setNumBlocks(int(_bi.size()));
+  }
+
 }

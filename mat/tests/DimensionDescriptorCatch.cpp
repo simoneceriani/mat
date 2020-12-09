@@ -15,9 +15,7 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]"
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == NB);
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
-    d->setBlockSize(3);
-
-    d->setNumBlocks(5);
+    d->resize(3, 5);
     REQUIRE(d->numBlocks() == 5);
 
 
@@ -28,7 +26,7 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]"
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == NB);
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
-    d->setNumBlocks(5);
+    d->resize(3, 5);
     REQUIRE(d->numBlocks() == 5);
 
 
@@ -43,12 +41,30 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]"
     REQUIRE(d->numBlocks() == 5);
   }
 
+  int s = 0;
   for (int i = 0; i < d->numBlocks(); i++) {
     REQUIRE(d->blockSize(i) == 3);
     REQUIRE(d->blockStart(i) == 3 * i);
+    s += d->blockSize(i);
   }
 
-  REQUIRE(d->numElements() == 15);
+  REQUIRE(d->numElements() == s);
+
+  if (mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == mat::Dynamic) {
+    int b = (mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == mat::Dynamic ? 3 : mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime);
+    d->addBlock(b);
+
+
+    s = 0;
+    for (int i = 0; i < d->numBlocks(); i++) {
+      REQUIRE(d->blockSize(i) == 3);
+      REQUIRE(d->blockStart(i) == s);
+      s += d->blockSize(i);
+    }
+
+    REQUIRE(d->numElements() == s);
+  }
+
 
 }
 
@@ -65,10 +81,10 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<mat::Variable|5>", "[DimensionDescri
     
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
-    d->setBlockSize(blockSizes);
+    d->resize(blockSizes, blockSizes.size());
     REQUIRE(d->numBlocks() == blockSizes.size());
 
-    d->setNumBlocks(blockSizes.size());
+    d->resize(blockSizes);
     REQUIRE(d->numBlocks() == blockSizes.size());
 
 
@@ -94,7 +110,23 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<mat::Variable|5>", "[DimensionDescri
     s += d->blockSize(i);
   }
 
-  REQUIRE(d->numElements() == 15);
+  REQUIRE(d->numElements() == s);
+
+  if (mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == mat::Dynamic) {
+    int b = 8;
+    blockSizes.push_back(b);
+    d->addBlock(b);
+
+
+    s = 0;
+    for (int i = 0; i < d->numBlocks(); i++) {
+      REQUIRE(d->blockSize(i) == blockSizes[i]);
+      REQUIRE(d->blockStart(i) == s);
+      s += d->blockSize(i);
+    }
+
+    REQUIRE(d->numElements() == s);
+  }
 }
 
 TEST_CASE("DimensionDescriptorTraits", "[DimensionDescriptor]") {

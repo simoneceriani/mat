@@ -18,6 +18,7 @@ namespace mat {
       return NB;
     }
 
+  protected:
     void setNumBlocks(int nb);
 
   };
@@ -37,6 +38,7 @@ namespace mat {
       return _nb;
     }
 
+  protected:
     void setNumBlocks(int nb);
 
   };
@@ -127,17 +129,18 @@ namespace mat {
       return i * B;
     }
 
-    void setBlockSize(int b) {
-      assert(b == B);
-    }
-
     void resize(int b, int nb) {
-      this->setBlockSize(b);
+      assert(b == B);
       this->setNumBlocks(nb);
     }
 
     int numElements() const {
       return B * this->numBlocks();
+    }
+
+    void addBlock(int b) {
+      assert(b == B);
+      this->setNumBlocks(numBlocks() + 1);
     }
 
   };
@@ -168,18 +171,18 @@ namespace mat {
       return i * _b;
     }
 
-    void setBlockSize(int b) {
+    void resize(int b, int nb) {
       assert(b > 0);
       this->_b = b;
-    }
-
-    void resize(int b, int nb) {
-      this->setBlockSize(b);
       this->setNumBlocks(nb);
     }
 
     int numElements() const {
       return this->_b * this->numBlocks();
+    }
+
+    void addBlock(int b) {
+      this->setNumBlocks(numBlocks() + 1);
     }
 
   };
@@ -218,10 +221,11 @@ namespace mat {
       return _bi;
     }
 
-    void setBlockSize(const std::vector<int>& bi);
     void resize(const std::vector<int>& bi, int nb);
+    void resize(const std::vector<int>& bi);
 
-    void setNumBlocks(int nb);
+    void addBlock(int b);
+
 
     int numElements() const {
       return _bi_start.back();

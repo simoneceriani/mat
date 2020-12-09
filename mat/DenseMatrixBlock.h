@@ -27,8 +27,21 @@ namespace mat {
 
   public:
     DenseMatrixBlock();
+
+    // standard
     DenseMatrixBlock(typename RowTraits::BlockSizeTypePar rowBlocksSizes, typename RowTraits::BlockSizeTypePar colBlocksSizes);
     DenseMatrixBlock(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename RowTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol);
+    DenseMatrixBlock(const std::shared_ptr<const DimensionDescriptorRow>& rowDescription, const std::shared_ptr<const DimensionDescriptorCol>& colDescription);
+
+    // with block
+    DenseMatrixBlock(const BlockDescriptor& blockDesc);
+
+    // square matrices
+    static DenseMatrixBlock squareMatrix(typename RowTraits::BlockSizeTypePar blocksSizes);
+    static DenseMatrixBlock squareMatrix(typename RowTraits::BlockSizeTypePar blocksSizes, int nBlocks);
+    static DenseMatrixBlock squareMatrix(const std::shared_ptr<const DimensionDescriptorRow>& blocksDescription);
+
+
     virtual ~DenseMatrixBlock();
 
     inline int numBlocksRow() const {
@@ -59,6 +72,15 @@ namespace mat {
       return _blockDescriptor.numElementCols();
     }
 
+    const BlockDescriptor& blockDescriptor() const {
+      return _blockDescriptor;
+    }
+
+    void resizeSquare(const std::shared_ptr<const DimensionDescriptorRow>& desc);
+    void resizeSquare(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow);
+
+    void resize(const BlockDescriptor& blockDesc);
+    void resize(const std::shared_ptr<const DimensionDescriptorRow>& rowDescription, const std::shared_ptr<const DimensionDescriptorCol>& colDescription);
     void resize(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename RowTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol);
 
     const MatrixType& mat() const {
