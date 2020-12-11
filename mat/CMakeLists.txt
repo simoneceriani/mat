@@ -28,6 +28,8 @@ target_sources_wrapper(mat
     Global.h
 		DimensionDescriptor.h
 		DimensionDescriptor.hpp
+    DimensionDescriptorTraits.h
+    DimensionDescriptorTraits.hpp
     MatrixBlockDescriptor.h
     MatrixBlockDescriptor.hpp
     DenseMatrixBlock.h
@@ -35,6 +37,7 @@ target_sources_wrapper(mat
 	PRIVATE
     Global.cpp
 		DimensionDescriptor.cpp
+    DimensionDescriptorTraits.cpp
     MatrixBlockDescriptor.cpp
     DenseMatrixBlock.cpp
 )

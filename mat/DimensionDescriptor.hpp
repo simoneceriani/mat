@@ -2,6 +2,8 @@
 
 #include "DimensionDescriptor.h"
 
+#include "DimensionDescriptorTraits.hpp"
+
 #include <cassert>
 
 namespace mat {

@@ -3,6 +3,7 @@
 
 #include "mat/DimensionDescriptor.hpp"
 
+#include <memory>
 #include <type_traits>
 
 TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]", ((int B, int NB), B, NB), (3, 5), (3, mat::Dynamic), (mat::Dynamic, 5), (mat::Dynamic, mat::Dynamic)) {

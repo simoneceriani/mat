@@ -4,6 +4,8 @@
 #include <Eigen/Core>
 #include <vector>
 
+#include "DimensionDescriptorTraits.h"
+
 namespace mat {
 
   template<int NB>
@@ -46,68 +48,6 @@ namespace mat {
   //-----------------------------------------------------------------------------------------
 
   template<int B, int NB>
-  struct DimensionDescriptorTraits {
-    using BlockSizeType = int;
-    using BlockSizeTypePar = int;
-
-    static constexpr int numBlocksAtCompileTime = NB;
-    static constexpr int blockSizeAtCompileTime = B;
-    static constexpr int numElementsAtCompileTime = NB * B;
-  };
-
-  template<int B>
-  struct DimensionDescriptorTraits<B, mat::Dynamic> {
-    using BlockSizeType = int;
-    using BlockSizeTypePar = int;
-
-    static constexpr int numBlocksAtCompileTime = mat::Dynamic;
-    static constexpr int blockSizeAtCompileTime = B;
-    static constexpr int numElementsAtCompileTime = mat::Dynamic;
-  };
-
-  template<int NB>
-  struct DimensionDescriptorTraits<mat::Dynamic, NB> {
-    using BlockSizeType = int;
-    using BlockSizeTypePar = int;
-
-    static constexpr int numBlocksAtCompileTime = NB;
-    static constexpr int blockSizeAtCompileTime = mat::Dynamic;
-    static constexpr int numElementsAtCompileTime = mat::Dynamic;
-  };
-
-  template<>
-  struct DimensionDescriptorTraits<mat::Dynamic, mat::Dynamic> {
-    using BlockSizeType = int;
-    using BlockSizeTypePar = int;
-
-    static constexpr int numBlocksAtCompileTime = mat::Dynamic;
-    static constexpr int blockSizeAtCompileTime = mat::Dynamic;
-    static constexpr int numElementsAtCompileTime = mat::Dynamic;
-  };
-
-  template<int NB>
-  struct DimensionDescriptorTraits<mat::Variable, NB> {
-    using BlockSizeType = std::vector<int>;
-    using BlockSizeTypePar = const std::vector<int>&;
-
-    static constexpr int numBlocksAtCompileTime = NB;
-    static constexpr int blockSizeAtCompileTime = mat::Variable;
-    static constexpr int numElementsAtCompileTime = mat::Dynamic;
-  };
-
-  template<>
-  struct DimensionDescriptorTraits<mat::Variable, mat::Dynamic> {
-    using BlockSizeType = std::vector<int>;
-    using BlockSizeTypePar = const std::vector<int>&;
-
-    static constexpr int numBlocksAtCompileTime = mat::Dynamic;
-    static constexpr int blockSizeAtCompileTime = mat::Variable;
-    static constexpr int numElementsAtCompileTime = mat::Dynamic;
-  };
-
-  //-----------------------------------------------------------------------------------------
-
-  template<int B, int NB>
   class DimensionDescriptor : public DimensionDescriptorBase<NB> {
 
   public:
@@ -120,12 +60,12 @@ namespace mat {
     virtual ~DimensionDescriptor();
 
     inline int blockSize(int i) const {
-      assert(i >= 0 && i < numBlocks());
+      assert(i >= 0 && i < this->numBlocks());
       return B;
     }
 
     inline int blockStart(int i) const {
-      assert(i >= 0 && i < numBlocks());
+      assert(i >= 0 && i < this->numBlocks());
       return i * B;
     }
 
@@ -140,7 +80,7 @@ namespace mat {
 
     void addBlock(int b) {
       assert(b == B);
-      this->setNumBlocks(numBlocks() + 1);
+      this->setNumBlocks(this->numBlocks() + 1);
     }
 
   };
@@ -162,12 +102,12 @@ namespace mat {
     virtual ~DimensionDescriptor();
 
     inline int blockSize(int i) const {
-      assert(i >= 0 && i < numBlocks());
+      assert(i >= 0 && i < this->numBlocks());
       return _b;
     }
     
     inline int blockStart(int i) const {
-      assert(i >= 0 && i < numBlocks());
+      assert(i >= 0 && i < this->numBlocks());
       return i * _b;
     }
 
@@ -182,7 +122,7 @@ namespace mat {
     }
 
     void addBlock(int b) {
-      this->setNumBlocks(numBlocks() + 1);
+      this->setNumBlocks(this->numBlocks() + 1);
     }
 
   };
@@ -207,12 +147,12 @@ namespace mat {
     virtual ~DimensionDescriptor();
 
     inline int blockSize(int i) const {
-      assert(i >= 0 && i < numBlocks());
+      assert(i >= 0 && i < this->numBlocks());
       return _bi[i];
     }
 
     inline int blockStart(int i) const {
-      assert(i >= 0 && i < numBlocks());
+      assert(i >= 0 && i < this->numBlocks());
       return _bi_start[i];
     }
 
