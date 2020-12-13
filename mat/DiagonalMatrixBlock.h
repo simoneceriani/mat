@@ -19,6 +19,14 @@ namespace mat {
     using SubMatrixType = typename Traits::SubMatrixType;
     using BlockType = typename Traits::BlockType;
     using ConstBlockType = typename Traits::ConstBlockType;
+
+    using BlockDescriptor = MatrixBlockDescriptor<BR, BC, NBR, NBC>;
+    using DimensionDescriptorRow = typename BlockDescriptor::DimensionDescriptorRow;
+    using DimensionDescriptorCol = typename BlockDescriptor::DimensionDescriptorCol;
+
+    using RowTraits = typename DimensionDescriptorRow::Traits;
+    using ColTraits = typename DimensionDescriptorCol::Traits;
+
   private:
     StorageType _mat;
 

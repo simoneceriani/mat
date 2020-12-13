@@ -43,16 +43,16 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock", "[DenseMatrixBlock]", ((int BR, int B
     REQUIRE(mat->mat().rows() == (NBR == mat::Dynamic || BR == mat::Dynamic ? 0 : camSize * numCams));
     REQUIRE(mat->mat().cols() == (NBC == mat::Dynamic || BC == mat::Dynamic ? 0 : pointSize * numPoints));
 
-    mat->resize(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints));
+    mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints));
 
   }
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSize, pointSize)));
-    mat->resize(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSize, pointSize)));
+    mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints));
   }
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints)));
-    mat->resize(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints)));
+    mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints));
   }
 
   REQUIRE(mat->numElementRows() == camSize * numCams);
@@ -67,14 +67,14 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock", "[DenseMatrixBlock]", ((int BR, int B
   REQUIRE(mat2.numElementRows() == mat2.mat().rows());
   REQUIRE(mat2.numElementCols() == mat2.mat().cols());
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat3.numElementRows() == mat->mat().rows());
   REQUIRE(mat3.numElementCols() == mat->mat().cols());
   REQUIRE(mat3.numElementRows() == mat3.mat().rows());
   REQUIRE(mat3.numElementCols() == mat3.mat().cols());
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat4.numElementRows() == mat->mat().rows());
   REQUIRE(mat4.numElementCols() == mat->mat().cols());
   REQUIRE(mat4.numElementRows() == mat4.mat().rows());
@@ -146,14 +146,14 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock-Square", "[DenseMatrixBlock]", ((int BR
   REQUIRE(mat2.numElementRows() == mat2.mat().rows());
   REQUIRE(mat2.numElementCols() == mat2.mat().cols());
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat3.numElementRows() == mat->mat().rows());
   REQUIRE(mat3.numElementCols() == mat->mat().cols());
   REQUIRE(mat3.numElementRows() == mat3.mat().rows());
   REQUIRE(mat3.numElementCols() == mat3.mat().cols());
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat4.numElementRows() == mat->mat().rows());
   REQUIRE(mat4.numElementCols() == mat->mat().cols());
   REQUIRE(mat4.numElementRows() == mat4.mat().rows());
@@ -201,17 +201,17 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, i
     REQUIRE(mat->mat().rows() == 0);
     REQUIRE(mat->mat().cols() == 0);
 
-    mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
+    mat->resize(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
 
   }
   
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSizeVar, pointSizeVar)));
-    mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSizeVar, pointSizeVar)));
+    mat->resize(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
   }
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints)));
-    mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints)));
+    mat->resize(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
   }
   
   REQUIRE(mat->numElementRows() == camSize * numCams);
@@ -220,27 +220,27 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, i
   REQUIRE(mat->numElementRows() == mat->mat().rows());
   REQUIRE(mat->numElementCols() == mat->mat().cols());
 
-  MatT mat2(MatT::BlockDescriptor(mat->blockDescriptor()));
+  MatT mat2(typename MatT::BlockDescriptor(mat->blockDescriptor()));
   REQUIRE(mat2.numElementRows() == mat->mat().rows());
   REQUIRE(mat2.numElementCols() == mat->mat().cols());
   REQUIRE(mat2.numElementRows() == mat2.mat().rows());
   REQUIRE(mat2.numElementCols() == mat2.mat().cols());
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat3.numElementRows() == mat->mat().rows());
   REQUIRE(mat3.numElementCols() == mat->mat().cols());
   REQUIRE(mat3.numElementRows() == mat3.mat().rows());
   REQUIRE(mat3.numElementCols() == mat3.mat().cols());
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat4.numElementRows() == mat->mat().rows());
   REQUIRE(mat4.numElementCols() == mat->mat().cols());
   REQUIRE(mat4.numElementRows() == mat4.mat().rows());
   REQUIRE(mat4.numElementCols() == mat4.mat().cols());
 
   MatT mat5;
-  mat5.resize(MatT::BlockDescriptor(mat->blockDescriptor()));
+  mat5.resize(typename MatT::BlockDescriptor(mat->blockDescriptor()));
   REQUIRE(mat5.numElementRows() == mat->mat().rows());
   REQUIRE(mat5.numElementCols() == mat->mat().cols());
   REQUIRE(mat5.numElementRows() == mat5.mat().rows());
@@ -277,7 +277,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar-Square", "[DenseMatrixBlock]", ((int
     REQUIRE(mat->mat().rows() == 0);
     REQUIRE(mat->mat().cols() == 0);
 
-    auto block = MatT::BlockDescriptor(camSizeVar, numCams, camSizeVar, numCams);
+    auto block = typename MatT::BlockDescriptor(camSizeVar, numCams, camSizeVar, numCams);
     mat->resize(block);
 
   }
@@ -307,21 +307,21 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar-Square", "[DenseMatrixBlock]", ((int
   REQUIRE(mat2.numElementRows() == mat2.mat().rows());
   REQUIRE(mat2.numElementCols() == mat2.mat().cols());
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat3.numElementRows() == mat->mat().rows());
   REQUIRE(mat3.numElementCols() == mat->mat().cols());
   REQUIRE(mat3.numElementRows() == mat3.mat().rows());
   REQUIRE(mat3.numElementCols() == mat3.mat().cols());
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(mat4.numElementRows() == mat->mat().rows());
   REQUIRE(mat4.numElementCols() == mat->mat().cols());
   REQUIRE(mat4.numElementRows() == mat4.mat().rows());
   REQUIRE(mat4.numElementCols() == mat4.mat().cols());
 
   MatT mat5;
-  mat5.resize(MatT::BlockDescriptor(mat->blockDescriptor()));
+  mat5.resize(typename MatT::BlockDescriptor(mat->blockDescriptor()));
   REQUIRE(mat5.numElementRows() == mat->mat().rows());
   REQUIRE(mat5.numElementCols() == mat->mat().cols());
   REQUIRE(mat5.numElementRows() == mat5.mat().rows());

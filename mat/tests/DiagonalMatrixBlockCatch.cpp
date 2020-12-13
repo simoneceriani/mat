@@ -276,7 +276,7 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockVar-Square", "[DiagonalMatrixBlock]",
 
     REQUIRE(mat->mat().size() == (NBR == mat::Dynamic ? 0 : NBR));
 
-    auto block = MatT::BlockDescriptor(camSizeVar, numCams, camSizeVar, numCams);
+    auto block = typename MatT::BlockDescriptor(camSizeVar, numCams, camSizeVar, numCams);
     mat->resize(block);
 
   }
@@ -302,15 +302,15 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockVar-Square", "[DiagonalMatrixBlock]",
   MatT mat2(mat->blockDescriptor());
   REQUIRE(std::min(mat2.numBlocksRow(), mat2.numBlocksCol()) == mat->mat().size());
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(std::min(mat3.numBlocksRow(), mat3.numBlocksCol()) == mat->mat().size());
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
   REQUIRE(std::min(mat4.numBlocksRow(), mat4.numBlocksCol()) == mat->mat().size());
 
   MatT mat5;
-  mat5.resize(MatT::BlockDescriptor(mat->blockDescriptor()));
+  mat5.resize(typename MatT::BlockDescriptor(mat->blockDescriptor()));
   REQUIRE(std::min(mat5.numBlocksRow(), mat5.numBlocksCol()) == mat->mat().size());
 
   for (int i = 0; i < std::min(mat->numBlocksRow(), mat->numBlocksCol()); i++) {

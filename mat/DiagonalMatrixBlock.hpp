@@ -20,10 +20,10 @@ namespace mat {
 
   template< class T, int BR, int BC, int NBR, int NBC >
   void DiagonalMatrixBlock<T, BR, BC, NBR, NBC>::resizeImpl() {
-    _mat.resize(std::min(numBlocksRow(), numBlocksCol()));
+    _mat.resize(std::min(this->numBlocksRow(), this->numBlocksCol()));
     if (RowTraits::blockSizeAtCompileTime == mat::Dynamic || ColTraits::blockSizeAtCompileTime == mat::Dynamic) {
       for (int i = 0; i < _mat.size(); i++) {
-        _mat[i].resize(rowBlockSize(i), colBlockSize(i));
+        _mat[i].resize(this->rowBlockSize(i), this->colBlockSize(i));
       }
     }
   }
