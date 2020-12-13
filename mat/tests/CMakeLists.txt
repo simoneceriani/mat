@@ -22,6 +22,7 @@ set(TESTS_LIST
 	DimensionDescriptorCatch.cpp
   MatrixBlockDescriptorCatch.cpp
   DenseMatrixBlockCatch.cpp
+  DiagonalMatrixBlockCatch.cpp
 )
 
 foreach(s ${TESTS_LIST})

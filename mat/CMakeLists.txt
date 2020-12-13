@@ -32,14 +32,21 @@ target_sources_wrapper(mat
     DimensionDescriptorTraits.hpp
     MatrixBlockDescriptor.h
     MatrixBlockDescriptor.hpp
+    MatrixBlockTypeTraits.h
     DenseMatrixBlock.h
     DenseMatrixBlock.hpp
+    DiagonalMatrixBlock.h
+    DiagonalMatrixBlock.hpp
+    MatrixBlockBase.h
+    MatrixBlockBase.hpp
 	PRIVATE
     Global.cpp
 		DimensionDescriptor.cpp
     DimensionDescriptorTraits.cpp
     MatrixBlockDescriptor.cpp
     DenseMatrixBlock.cpp
+    DiagonalMatrixBlock.cpp
+    MatrixBlockBase.cpp
 )
 
 # if you do not want to have matd.{dll,lib,so} in debug disable this 

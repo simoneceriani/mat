@@ -14,7 +14,6 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]"
 
     d.reset(new mat::DimensionDescriptor<B, NB>());
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == NB);
-    REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
     d->resize(3, 5);
     REQUIRE(d->numBlocks() == 5);
@@ -25,7 +24,6 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]"
 
     d.reset(new mat::DimensionDescriptor<B, NB>(3));
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == NB);
-    REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
     d->resize(3, 5);
     REQUIRE(d->numBlocks() == 5);
@@ -37,7 +35,6 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<3|Dynamic>", "[DimensionDescriptor]"
     d.reset(new mat::DimensionDescriptor<B, NB>(3, 5));
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == NB);
 
-    REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
     REQUIRE(d->numBlocks() == 5);
   }
@@ -80,7 +77,6 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<mat::Variable|5>", "[DimensionDescri
     d.reset(new mat::DimensionDescriptor<B, NB>());
     REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::numBlocksAtCompileTime == NB);
     
-    REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
     d->resize(blockSizes, blockSizes.size());
     REQUIRE(d->numBlocks() == blockSizes.size());
@@ -100,7 +96,6 @@ TEMPLATE_TEST_CASE_SIG("DimensionDescriptor<mat::Variable|5>", "[DimensionDescri
     }
 
     REQUIRE(d->numBlocks() == 5);
-    REQUIRE(mat::DimensionDescriptor<B, NB>::Traits::blockSizeAtCompileTime == B);
 
   }
 
@@ -134,51 +129,57 @@ TEST_CASE("DimensionDescriptorTraits", "[DimensionDescriptor]") {
 
   {
     using T = mat::DimensionDescriptorTraits<3, 5>;
-    static_assert(std::is_same<T::BlockSizeType, int>::value, "this should be int");
-    static_assert(T::blockSizeAtCompileTime == 3, "this should be 3");
-    static_assert(T::numBlocksAtCompileTime == 5, "this should be 5");
-    static_assert(T::numElementsAtCompileTime == 15, "this should be 15");
+    static_assert(std::is_same<T::BlockSizeType, int>::value, "");
+    static_assert(T::blockSizeAtCompileTime == 3, "");
+    static_assert(T::blockType == mat::Fixed, "");
+    static_assert(T::numBlocksAtCompileTime == 5, "");
+    static_assert(T::numElementsAtCompileTime == 15, "");
   }
 
   {
     using T = mat::DimensionDescriptorTraits<3, mat::Dynamic>;
-    static_assert(std::is_same<T::BlockSizeType, int>::value, "this should be int");
-    static_assert(T::blockSizeAtCompileTime == 3, "this should be 3");
-    static_assert(T::numBlocksAtCompileTime == mat::Dynamic, "this should be 5");
-    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "this should be 15");
+    static_assert(std::is_same<T::BlockSizeType, int>::value, "");
+    static_assert(T::blockSizeAtCompileTime == 3, "");
+    static_assert(T::blockType == mat::Fixed, "");
+    static_assert(T::numBlocksAtCompileTime == mat::Dynamic, "");
+    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "");
   }
 
   {
     using T = mat::DimensionDescriptorTraits<mat::Dynamic, 5>;
-    static_assert(std::is_same<T::BlockSizeType, int>::value, "this should be int");
-    static_assert(T::blockSizeAtCompileTime == mat::Dynamic, "this should be 3");
-    static_assert(T::numBlocksAtCompileTime == 5, "this should be 5");
-    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "this should be 15");
+    static_assert(std::is_same<T::BlockSizeType, int>::value, "");
+    static_assert(T::blockSizeAtCompileTime == mat::Dynamic, "");
+    static_assert(T::blockType == mat::Dynamic, "");
+    static_assert(T::numBlocksAtCompileTime == 5, "");
+    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "");
   }
 
   {
     using T = mat::DimensionDescriptorTraits<mat::Dynamic, mat::Dynamic>;
-    static_assert(std::is_same<T::BlockSizeType, int>::value, "this should be int");
-    static_assert(T::blockSizeAtCompileTime == mat::Dynamic, "this should be 3");
-    static_assert(T::numBlocksAtCompileTime == mat::Dynamic, "this should be 5");
-    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "this should be 15");
+    static_assert(std::is_same<T::BlockSizeType, int>::value, "");
+    static_assert(T::blockSizeAtCompileTime == mat::Dynamic, "");
+    static_assert(T::blockType == mat::Dynamic, "");
+    static_assert(T::numBlocksAtCompileTime == mat::Dynamic, "");
+    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "");
   }
 
 
   {
     using T = mat::DimensionDescriptorTraits<mat::Variable, 5>;
     static_assert(std::is_same<T::BlockSizeType, std::vector<int>>::value, "this should be std::vector<int>");
-    static_assert(T::blockSizeAtCompileTime == mat::Variable, "this should be 3");
-    static_assert(T::numBlocksAtCompileTime == 5, "this should be 5");
-    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "this should be 15");
+    static_assert(T::blockSizeAtCompileTime == mat::Dynamic, "");
+    static_assert(T::blockType == mat::Variable, "");
+    static_assert(T::numBlocksAtCompileTime == 5, "");
+    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "");
   }
 
   {
     using T = mat::DimensionDescriptorTraits<mat::Variable, mat::Dynamic>;
     static_assert(std::is_same<T::BlockSizeType, std::vector<int>>::value, "this should be std::vector<int>");
-    static_assert(T::blockSizeAtCompileTime == mat::Variable, "this should be 3");
-    static_assert(T::numBlocksAtCompileTime == mat::Dynamic, "this should be 5");
-    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "this should be 15");
+    static_assert(T::blockSizeAtCompileTime == mat::Dynamic, "");
+    static_assert(T::blockType == mat::Variable, "");
+    static_assert(T::numBlocksAtCompileTime == mat::Dynamic, "");
+    static_assert(T::numElementsAtCompileTime == mat::Dynamic, "");
   }
 
 

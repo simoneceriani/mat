@@ -87,6 +87,7 @@ namespace mat {
   template<int NB>
   DimensionDescriptor<mat::Variable, NB>::DimensionDescriptor()
   {
+    _bi.resize(this->numBlocks(), 0); // create N blocks, but empty.... no sense
     updateStarts();
   }
 

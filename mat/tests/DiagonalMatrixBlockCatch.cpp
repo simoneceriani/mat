@@ -1,7 +1,7 @@
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
-#include "mat/DenseMatrixBlock.hpp"
+#include "mat/DiagonalMatrixBlock.hpp"
 
 // let use W matrix in BA case
 static constexpr int camSize = 6;
@@ -11,8 +11,8 @@ static constexpr int numPoints = 10;
 
 static const std::vector<int> camSizeVar = { 5,8,6,5 };
 static const std::vector<int> pointSizeVar = { 2,2,3,3,4,4,5,5,1,1 };
-
-TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock", "[DenseMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
+/*
+TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlock", "[DiagonalMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
   (camSize, pointSize, numCams, numPoints),
   (camSize, pointSize, numCams, mat::Dynamic),
   (camSize, pointSize, mat::Dynamic, numPoints),
@@ -32,7 +32,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock", "[DenseMatrixBlock]", ((int BR, int B
 )
 {
 
-  using MatT = mat::DenseMatrixBlock<double,BR, BC, NBR, NBC>;
+  using MatT = mat::DiagonalMatrixBlock<double, BR, BC, NBR, NBC>;
 
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
@@ -103,7 +103,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock", "[DenseMatrixBlock]", ((int BR, int B
   }
 }
 
-TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock-Square", "[DenseMatrixBlock]", ((int BR, int NBR), BR, NBR),
+TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlock-Square", "[DiagonalMatrixBlock]", ((int BR, int NBR), BR, NBR),
   (camSize, numCams),
   (camSize, mat::Dynamic),
   (mat::Dynamic, numCams),
@@ -111,7 +111,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock-Square", "[DenseMatrixBlock]", ((int BR
 )
 {
 
-  using MatT = mat::DenseMatrixBlock<double, BR, BR, NBR, NBR>;
+  using MatT = mat::DiagonalMatrixBlock<double, BR, BR, NBR, NBR>;
 
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
@@ -184,14 +184,14 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlock-Square", "[DenseMatrixBlock]", ((int BR
 
 
 
-TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, int NBC), NBR, NBC),
+TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockVar", "[DiagonalMatrixBlock]", ((int NBR, int NBC), NBR, NBC),
   (numCams, numPoints),
   (numCams, mat::Dynamic),
   (mat::Dynamic, numPoints),
   (mat::Dynamic, mat::Dynamic)
 )
 {
-  using MatT = mat::DenseMatrixBlock<double, mat::Variable, mat::Variable, NBR, NBC>;
+  using MatT = mat::DiagonalMatrixBlock<double, mat::Variable, mat::Variable, NBR, NBC>;
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
     mat.reset(new MatT());
@@ -204,7 +204,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, i
     mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
 
   }
-  
+
   SECTION("sized ctor") {
     mat.reset(new MatT(MatT::BlockDescriptor(camSizeVar, pointSizeVar)));
     mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
@@ -213,7 +213,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, i
     mat.reset(new MatT(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints)));
     mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints));
   }
-  
+
   REQUIRE(mat->numElementRows() == camSize * numCams);
   REQUIRE(mat->numElementCols() == pointSize * numPoints);
 
@@ -261,21 +261,20 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar", "[DenseMatrixBlock]", ((int NBR, i
     REQUIRE(mat5.colBlockSize(i) == pointSizeVar[i]);
   }
 }
-
-TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar-Square", "[DenseMatrixBlock]", ((int NBR), NBR),
+*/
+TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockVar-Square", "[DiagonalMatrixBlock]", ((int NBR), NBR),
   (numCams),
   (mat::Dynamic)
 )
 {
-  using MatT = mat::DenseMatrixBlock<double, mat::Variable, mat::Variable, NBR, NBR>;
+  using MatT = mat::DiagonalMatrixBlock<double, mat::Variable, mat::Variable, NBR, NBR>;
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
     mat.reset(new MatT());
     REQUIRE(mat->numBlocksRow() == (NBR == mat::Dynamic ? 0 : NBR));
     REQUIRE(mat->numBlocksCol() == (NBR == mat::Dynamic ? 0 : NBR));
 
-    REQUIRE(mat->mat().rows() == 0);
-    REQUIRE(mat->mat().cols() == 0);
+    REQUIRE(mat->mat().size() == (NBR == mat::Dynamic ? 0 : NBR));
 
     auto block = MatT::BlockDescriptor(camSizeVar, numCams, camSizeVar, numCams);
     mat->resize(block);
@@ -298,43 +297,29 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockVar-Square", "[DenseMatrixBlock]", ((int
   REQUIRE(mat->numElementRows() == camSize * numCams);
   REQUIRE(mat->numElementCols() == camSize * numCams);
 
-  REQUIRE(mat->numElementRows() == mat->mat().rows());
-  REQUIRE(mat->numElementCols() == mat->mat().cols());
+  REQUIRE(mat->mat().size() == numCams);
 
   MatT mat2(mat->blockDescriptor());
-  REQUIRE(mat2.numElementRows() == mat->mat().rows());
-  REQUIRE(mat2.numElementCols() == mat->mat().cols());
-  REQUIRE(mat2.numElementRows() == mat2.mat().rows());
-  REQUIRE(mat2.numElementCols() == mat2.mat().cols());
+  REQUIRE(std::min(mat2.numBlocksRow(), mat2.numBlocksCol()) == mat->mat().size());
 
   MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
-  REQUIRE(mat3.numElementRows() == mat->mat().rows());
-  REQUIRE(mat3.numElementCols() == mat->mat().cols());
-  REQUIRE(mat3.numElementRows() == mat3.mat().rows());
-  REQUIRE(mat3.numElementCols() == mat3.mat().cols());
+  REQUIRE(std::min(mat3.numBlocksRow(), mat3.numBlocksCol()) == mat->mat().size());
 
   MatT mat4;
   mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()));
-  REQUIRE(mat4.numElementRows() == mat->mat().rows());
-  REQUIRE(mat4.numElementCols() == mat->mat().cols());
-  REQUIRE(mat4.numElementRows() == mat4.mat().rows());
-  REQUIRE(mat4.numElementCols() == mat4.mat().cols());
+  REQUIRE(std::min(mat4.numBlocksRow(), mat4.numBlocksCol()) == mat->mat().size());
 
   MatT mat5;
   mat5.resize(MatT::BlockDescriptor(mat->blockDescriptor()));
-  REQUIRE(mat5.numElementRows() == mat->mat().rows());
-  REQUIRE(mat5.numElementCols() == mat->mat().cols());
-  REQUIRE(mat5.numElementRows() == mat5.mat().rows());
-  REQUIRE(mat5.numElementCols() == mat5.mat().cols());
+  REQUIRE(std::min(mat5.numBlocksRow(), mat5.numBlocksCol()) == mat->mat().size());
 
-  for (int i = 0; i < mat->numBlocksRow(); i++) {
+  for (int i = 0; i < std::min(mat->numBlocksRow(), mat->numBlocksCol()); i++) {
     REQUIRE(mat->rowBlockSize(i) == camSizeVar[i]);
     REQUIRE(mat2.rowBlockSize(i) == camSizeVar[i]);
     REQUIRE(mat3.rowBlockSize(i) == camSizeVar[i]);
     REQUIRE(mat4.rowBlockSize(i) == camSizeVar[i]);
     REQUIRE(mat5.rowBlockSize(i) == camSizeVar[i]);
-  }
-  for (int i = 0; i < mat->numBlocksCol(); i++) {
+
     REQUIRE(mat->colBlockSize(i) == camSizeVar[i]);
     REQUIRE(mat2.colBlockSize(i) == camSizeVar[i]);
     REQUIRE(mat3.colBlockSize(i) == camSizeVar[i]);

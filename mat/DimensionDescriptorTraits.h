@@ -11,6 +11,7 @@ namespace mat {
 
     static constexpr int numBlocksAtCompileTime = NB;
     static constexpr int blockSizeAtCompileTime = B;
+    static constexpr int blockType = mat::Fixed;
     static constexpr int numElementsAtCompileTime = NB * B;
   };
 
@@ -21,6 +22,7 @@ namespace mat {
 
     static constexpr int numBlocksAtCompileTime = mat::Dynamic;
     static constexpr int blockSizeAtCompileTime = B;
+    static constexpr int blockType = mat::Fixed;
     static constexpr int numElementsAtCompileTime = mat::Dynamic;
   };
 
@@ -31,6 +33,7 @@ namespace mat {
 
     static constexpr int numBlocksAtCompileTime = NB;
     static constexpr int blockSizeAtCompileTime = mat::Dynamic;
+    static constexpr int blockType = mat::Dynamic;
     static constexpr int numElementsAtCompileTime = mat::Dynamic;
   };
 
@@ -41,6 +44,7 @@ namespace mat {
 
     static constexpr int numBlocksAtCompileTime = mat::Dynamic;
     static constexpr int blockSizeAtCompileTime = mat::Dynamic;
+    static constexpr int blockType = mat::Dynamic;
     static constexpr int numElementsAtCompileTime = mat::Dynamic;
   };
 
@@ -50,7 +54,8 @@ namespace mat {
     using BlockSizeTypePar = const std::vector<int>&;
 
     static constexpr int numBlocksAtCompileTime = NB;
-    static constexpr int blockSizeAtCompileTime = mat::Variable;
+    static constexpr int blockSizeAtCompileTime = mat::Dynamic;
+    static constexpr int blockType = mat::Variable;
     static constexpr int numElementsAtCompileTime = mat::Dynamic;
   };
 
@@ -60,7 +65,8 @@ namespace mat {
     using BlockSizeTypePar = const std::vector<int>&;
 
     static constexpr int numBlocksAtCompileTime = mat::Dynamic;
-    static constexpr int blockSizeAtCompileTime = mat::Variable;
+    static constexpr int blockSizeAtCompileTime = mat::Dynamic;
+    static constexpr int blockType = mat::Variable;
     static constexpr int numElementsAtCompileTime = mat::Dynamic;
   };
 

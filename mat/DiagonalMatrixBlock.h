@@ -9,11 +9,11 @@
 namespace mat {
 
   template<class T, int BR, int BC, int NBR = mat::Dynamic, int NBC = mat::Dynamic >
-  class DenseMatrixBlock final : public MatrixBlockBase<BR, BC, NBR, NBC>  {
+  class DiagonalMatrixBlock final : public MatrixBlockBase<BR, BC, NBR, NBC>  {
 
   public:
 
-    using Traits = MatrixBlockTypeTraits<mat::BlockDense, T, BR, BC, NBR, NBC>;
+    using Traits = MatrixBlockTypeTraits<mat::BlockDiagonal, T, BR, BC, NBR, NBC>;
 
     using StorageType = typename Traits::StorageType;
     using SubMatrixType = typename Traits::SubMatrixType;
@@ -22,38 +22,37 @@ namespace mat {
   private:
     StorageType _mat;
 
+    void resizeImpl();
 
   public:
-    DenseMatrixBlock();
+    DiagonalMatrixBlock();
 
     // with block
-    DenseMatrixBlock(const BlockDescriptor& blockDesc);
+    DiagonalMatrixBlock(const BlockDescriptor& blockDesc);
 
-    virtual ~DenseMatrixBlock();
+    virtual ~DiagonalMatrixBlock();
 
     void resize(const BlockDescriptor& blockDesc) override final;
 
 
-    const StorageType& mat() const {
+    const StorageType & mat() const {
       return _mat;
     }
 
-    StorageType& mat() {
+    StorageType & mat() {
       return _mat;
     }
 
     inline BlockType block(int r, int c) {
-      return _mat.block<RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>(
-        this->rowBlockStart(r), this->colBlockStart(r),
-        this->rowBlockSize(r), this->colBlockSize(r)
-        );
+      assert(r == c);
+      assert(r >= 0 && r < _mat.size());
+      return _mat[r];
     }
 
     inline ConstBlockType block(int r, int c) const {
-      return _mat.block<RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>(
-        this->rowBlockStart(r), this->colBlockStart(r),
-        this->rowBlockSize(r), this->colBlockSize(r)
-        );
+      assert(r == c);
+      assert(r >= 0 && r < _mat.size());
+      return _mat[r];
     }
 
     void setZero();
