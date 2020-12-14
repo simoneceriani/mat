@@ -244,7 +244,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-RowMajor", "[SparseMatrixBlock]", ((in
 //-------------------------------------------------------------------------------------------------------------------------------
 
 TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
-  (2, 3, 3, 4),
+  (2, 3, 3, 4)/*,
   (2, 3, 3, Eigen::Dynamic),
   (2, 3, Eigen::Dynamic, 4),
   (2, 3, Eigen::Dynamic, Eigen::Dynamic),
@@ -259,7 +259,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
   (Eigen::Dynamic, Eigen::Dynamic, 3, 4),
   (Eigen::Dynamic, Eigen::Dynamic, 3, Eigen::Dynamic),
   (Eigen::Dynamic, Eigen::Dynamic, Eigen::Dynamic, 4),
-  (Eigen::Dynamic, Eigen::Dynamic, Eigen::Dynamic, Eigen::Dynamic)
+  (Eigen::Dynamic, Eigen::Dynamic, Eigen::Dynamic, Eigen::Dynamic)*/
 ) {
   // +-----------------------+
   // | 0.0 | --- | --- | 0.3 |
@@ -344,9 +344,16 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
     REQUIRE(it.row() == 0);
     REQUIRE(it() != it.end());
 
+    //auto & bij = it.block();
+    //bij.setConstant(it.row() + 3 / 1.0);
     auto m = it.block();
     REQUIRE((it.block().array() == it.row() + 3 / 1.0).all());
-    it.block().setConstant(it.row() + 3 / 1.0);
+    REQUIRE((m.array() == it.row() + 3 / 1.0).all());
+    auto vold = it.block()(0, 0);
+    it.block().setConstant(23);
+    REQUIRE((it.block().array() == 23).all());
+    it.block().setConstant(vold);
+    REQUIRE((it.block().array() == it.row() + 3 / 1.0).all());
 
     it++;
     REQUIRE(it() == 6);

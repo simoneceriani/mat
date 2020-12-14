@@ -7,6 +7,8 @@
 #include "MatrixBlockBase.h"
 #include "SparsityPattern.h"
 
+#include <type_traits>
+
 namespace mat {
 
   template<class T, int Ordering, int BR, int BC, int NBR = mat::Dynamic, int NBC = mat::Dynamic >
@@ -84,21 +86,6 @@ namespace mat {
 
     void setZero();
 
-
-    // decisor on constness for iterator
-    template<class C>
-    struct IsSparseMatrixBlockNonConst {
-    };
-    template<>
-    struct IsSparseMatrixBlockNonConst<const SparseMatrixBlock> {
-      static constexpr bool value = false;
-    };
-    template<>
-    struct IsSparseMatrixBlockNonConst<SparseMatrixBlock> {
-      static constexpr bool value = true;
-    };
-
-
     // iterator on inner dimension 
     template<class BaseT>
     class InnerIterator {
@@ -141,7 +128,7 @@ namespace mat {
       }
 
       template<typename RetType = BlockType>
-      inline std::enable_if_t<IsSparseMatrixBlockNonConst<BaseT>::value, RetType> block() {
+      inline std::enable_if_t<!std::is_const<BaseT>::value, RetType> block() {
         assert(_curId <= _lastId);
         return _sm->_mat[_curId];
       }

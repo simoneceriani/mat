@@ -72,7 +72,7 @@ namespace mat {
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   template <class ForwardIterator>
-  static ForwardIterator SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::binary_search(ForwardIterator first, ForwardIterator last, int val)
+  ForwardIterator SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::binary_search(ForwardIterator first, ForwardIterator last, int val)
   {
     first = std::lower_bound(first, last, val);
     if (first != last) {
