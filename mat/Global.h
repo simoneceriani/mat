@@ -10,4 +10,25 @@ namespace mat {
   constexpr int BlockDiagonal = 2;
   constexpr int BlockSparse = 3;
 
+  constexpr int ColMajor = 0;
+  constexpr int RowMajor = 1;
+
+  template<int Ordering>
+  struct IsColMajor {
+    static constexpr bool value = false;
+  };
+  template<>
+  struct IsColMajor<ColMajor> {
+    static constexpr bool value = true;
+  };
+
+  template<int Ordering>
+  struct IsRowMajor {
+    static constexpr bool value = false;
+  };
+  template<>
+  struct IsRowMajor<RowMajor> {
+    static constexpr bool value = true;
+  };
+
 }

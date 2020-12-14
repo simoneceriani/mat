@@ -23,6 +23,8 @@ set(TESTS_LIST
   MatrixBlockDescriptorCatch.cpp
   DenseMatrixBlockCatch.cpp
   DiagonalMatrixBlockCatch.cpp
+  SparsityPatternCatch.cpp
+  SparseMatrixBlockCatch.cpp
 )
 
 foreach(s ${TESTS_LIST})

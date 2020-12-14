@@ -43,7 +43,7 @@ namespace mat {
   template< class T, int BR, int BC, int NBR, int NBC >
   void DiagonalMatrixBlock<T, BR, BC, NBR, NBC>::setZero() {
     for (int i = 0; i < _mat.size(); i++) {
-      _mat.setZero();
+      _mat[i].setZero();
     }    
   }
 

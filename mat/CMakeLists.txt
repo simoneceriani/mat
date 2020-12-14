@@ -39,6 +39,9 @@ target_sources_wrapper(mat
     DiagonalMatrixBlock.hpp
     MatrixBlockBase.h
     MatrixBlockBase.hpp
+    SparsityPattern.h
+    SparseMatrixBlock.h
+    SparseMatrixBlock.hpp
 	PRIVATE
     Global.cpp
 		DimensionDescriptor.cpp
@@ -47,6 +50,8 @@ target_sources_wrapper(mat
     DenseMatrixBlock.cpp
     DiagonalMatrixBlock.cpp
     MatrixBlockBase.cpp
+    SparsityPattern.cpp
+    SparseMatrixBlock.cpp
 )
 
 # if you do not want to have matd.{dll,lib,so} in debug disable this 

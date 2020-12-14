@@ -39,5 +39,18 @@ namespace mat {
 
   };
 
+  template<class T, int BR, int BC, int NBR, int NBC>
+  class MatrixBlockTypeTraits<mat::BlockSparse, T, BR, BC, NBR, NBC> {
+  public:
+    using RowTraits = typename MatrixBlockDescriptor<BR, BC, NBR, NBC>::DimensionDescriptorRow::Traits;
+    using ColTraits = typename MatrixBlockDescriptor<BR, BC, NBR, NBC>::DimensionDescriptorCol::Traits;
+
+
+    using StorageType = std::vector<Eigen::Matrix<T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>>;
+    using SubMatrixType = Eigen::Matrix < T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>;
+    using BlockType = SubMatrixType&;
+    using ConstBlockType = const SubMatrixType&;
+
+  };
 
 }
