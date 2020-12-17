@@ -14,6 +14,9 @@ namespace mat {
     std::vector<int> _outerStrides;
     std::vector<std::vector<int>> _offsets;
 
+    template <class OuterDesc, class InnerDesc>
+    void computeStrides(const SparsityPattern<Ordering>& sp, const OuterDesc& outDesc, const InnerDesc& inDesc);
+
   public:
 
     template<int BR, int BC, int NBR, int NBC>

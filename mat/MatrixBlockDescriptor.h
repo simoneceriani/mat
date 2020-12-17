@@ -17,7 +17,7 @@ namespace mat {
     using DimensionDescriptorCol = DimensionDescriptor<BC, NBC>;
 
     using RowTraits = typename DimensionDescriptorRow::Traits;
-    using ColTraits = typename DimensionDescriptorRow::Traits;
+    using ColTraits = typename DimensionDescriptorCol::Traits;
 
   private:
     
@@ -28,8 +28,8 @@ namespace mat {
     MatrixBlockDescriptor();
 
     // standard
-    MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, typename RowTraits::BlockSizeTypePar colBlocksSizes);
-    MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename RowTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol);
+    MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, typename ColTraits::BlockSizeTypePar colBlocksSizes);
+    MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename ColTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol);
     MatrixBlockDescriptor(const std::shared_ptr<const DimensionDescriptorRow>& rowDescription, const std::shared_ptr<const DimensionDescriptorCol>& colDescription);
 
     // square matrices
@@ -75,6 +75,9 @@ namespace mat {
       return _colDesc->numElements();
     }
 
+    const DimensionDescriptorRow & rowDescription() const { return *_rowDesc; }
+    const DimensionDescriptorCol & colDescription() const { return *_colDesc; }
+
     const std::shared_ptr<const DimensionDescriptorRow>& rowDescriptionCSPtr() const { return _rowDesc; }
     const std::shared_ptr<const DimensionDescriptorCol>& colDescriptionCSPtr() const { return _colDesc; }
 
@@ -82,7 +85,7 @@ namespace mat {
     void resizeSquare(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow);
 
     void resize(const std::shared_ptr<const DimensionDescriptorRow>& rowDescription, const std::shared_ptr<const DimensionDescriptorCol>& colDescription);
-    void resize(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename RowTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol);
+    void resize(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename ColTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol);
 
   };
 

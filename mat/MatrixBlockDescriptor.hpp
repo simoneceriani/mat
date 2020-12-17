@@ -13,14 +13,14 @@ namespace mat {
   }
 
   template<int BR, int BC, int NBR, int NBC>
-  MatrixBlockDescriptor<BR, BC, NBR, NBC>::MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, typename RowTraits::BlockSizeTypePar colBlocksSizes)
+  MatrixBlockDescriptor<BR, BC, NBR, NBC>::MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, typename ColTraits::BlockSizeTypePar colBlocksSizes)
     : _rowDesc(std::make_shared<const DimensionDescriptorRow>(rowBlocksSizes)), _colDesc(std::make_shared <const DimensionDescriptorCol>(colBlocksSizes))
   {
 
   }
 
   template<int BR, int BC, int NBR, int NBC>
-  MatrixBlockDescriptor<BR, BC, NBR, NBC>::MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename RowTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol)
+  MatrixBlockDescriptor<BR, BC, NBR, NBC>::MatrixBlockDescriptor(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename ColTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol)
     : _rowDesc(std::make_shared<const DimensionDescriptorRow>(rowBlocksSizes, nBlocksRow)), _colDesc(std::make_shared <const DimensionDescriptorCol>(colBlocksSizes, nBlocksCol))
   {
 
@@ -79,7 +79,7 @@ namespace mat {
   }
 
   template<int BR, int BC, int NBR, int NBC>
-  void MatrixBlockDescriptor<BR, BC, NBR, NBC>::resize(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename RowTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol) {
+  void MatrixBlockDescriptor<BR, BC, NBR, NBC>::resize(typename RowTraits::BlockSizeTypePar rowBlocksSizes, int nBlocksRow, typename ColTraits::BlockSizeTypePar colBlocksSizes, int nBlocksCol) {
     _rowDesc = std::make_shared<const DimensionDescriptorRow>(rowBlocksSizes, nBlocksRow);
     _colDesc = std::make_shared<const DimensionDescriptorCol>(colBlocksSizes, nBlocksCol);
   }
