@@ -141,6 +141,7 @@ namespace mat {
 
     };
 
+    // iterate on column blocks (if block are stored in col major)
     template<typename RetType = InnerIterator<SparseMatrixBlock>>
     std::enable_if_t<IsColMajor<Ordering>::value, RetType> colBegin(int c) {
       return InnerIterator<SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);
@@ -151,6 +152,7 @@ namespace mat {
       return InnerIterator<const SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);
     }
 
+    // iterate on row blocks (if block are stored in row major)
     template<typename RetType = InnerIterator<SparseMatrixBlock>>
     std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int c) {
       return InnerIterator<SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);

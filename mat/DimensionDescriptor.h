@@ -59,6 +59,10 @@ namespace mat {
     DimensionDescriptor(int b, int nBlocks);
     virtual ~DimensionDescriptor();
 
+    inline int uniqueBlockSize() const {
+      return B;
+    }
+
     inline int blockSize(int i) const {
       assert(i >= 0 && i < this->numBlocks());
       return B;
@@ -100,6 +104,10 @@ namespace mat {
     DimensionDescriptor(int b);
     DimensionDescriptor(int b, int nBlocks);
     virtual ~DimensionDescriptor();
+
+    inline int uniqueBlockSize() const {
+      return _b;
+    }
 
     inline int blockSize(int i) const {
       assert(i >= 0 && i < this->numBlocks());
@@ -145,6 +153,10 @@ namespace mat {
     DimensionDescriptor(const std::vector<int>& bi);
     DimensionDescriptor(const std::vector<int>& bi, int nBlocks);
     virtual ~DimensionDescriptor();
+
+    inline int uniqueBlockSize() const {
+      return -1;
+    }
 
     inline int blockSize(int i) const {
       assert(i >= 0 && i < this->numBlocks());

@@ -4,7 +4,7 @@ namespace mat {
 
   template<int Ordering>
   SparsityPattern<Ordering>::SparsityPattern(int nr, int nc) 
-    : _count(-1)
+    : _count(0)
   {
     if (Ordering == mat::ColMajor) {
       _sp.resize(nc);
@@ -13,7 +13,7 @@ namespace mat {
       _sp.resize(nr);
     }
     else {
-      assert(false && "how do you end up here?!?");
+      ASSERT_FALSE();
     }
   }
 
@@ -27,7 +27,7 @@ namespace mat {
     for (int k = 0; k < _sp.size(); k++) {
       _sp[k].clear();
     }
-    _count = -1;
+    _count = 0;
   }
 
   // explicit instantiation

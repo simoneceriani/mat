@@ -46,6 +46,14 @@ namespace mat {
       return _colDesc->numBlocks();
     }
 
+    inline int rowUniqueBlockSize() const {
+      return _rowDesc->uniqueBlockSize();
+    }
+
+    inline int colUniqueBlockSize() const {
+      return _colDesc->uniqueBlockSize();
+    }
+
     inline int rowBlockSize(int i) const {
       return _rowDesc->blockSize(i);
     }

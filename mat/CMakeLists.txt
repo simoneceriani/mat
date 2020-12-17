@@ -42,6 +42,8 @@ target_sources_wrapper(mat
     SparsityPattern.h
     SparseMatrixBlock.h
     SparseMatrixBlock.hpp
+    SparsityPatternBlockDescriptor.h
+    SparsityPatternBlockDescriptor.hpp
 	PRIVATE
     Global.cpp
 		DimensionDescriptor.cpp
@@ -52,6 +54,7 @@ target_sources_wrapper(mat
     MatrixBlockBase.cpp
     SparsityPattern.cpp
     SparseMatrixBlock.cpp
+    SparsityPatternBlockDescriptor.cpp
 )
 
 # if you do not want to have matd.{dll,lib,so} in debug disable this 

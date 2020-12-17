@@ -45,7 +45,7 @@ namespace mat {
             _mat[count].resize(this->rowBlockSize(in), this->colBlockSize(o));
           }
           else {
-            assert(false && "how do you end up here?!?");
+            ASSERT_FALSE();
           }
         }
 
@@ -108,7 +108,7 @@ namespace mat {
       else return id - _innerIndexes.begin();
     }
     else {
-      assert(false && "how do you end up here?!?");
+      ASSERT_FALSE();
     }
     return -1;
   }

@@ -25,6 +25,7 @@ set(TESTS_LIST
   DiagonalMatrixBlockCatch.cpp
   SparsityPatternCatch.cpp
   SparseMatrixBlockCatch.cpp
+  SparsityPatternBlockDescriptorCatch.cpp
 )
 
 foreach(s ${TESTS_LIST})

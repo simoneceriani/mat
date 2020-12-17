@@ -2,6 +2,7 @@
 #include <vector>
 #include <chrono>
 #include <iostream>
+#include <Eigen/Sparse>
 
 void testBlocks() {
   // observe in debug what a block contains
@@ -10,6 +11,8 @@ void testBlocks() {
 
   auto bs = ms.block<2, 2>(0, 0, 2, 2);
   auto bm = md.block<2, 2>(0, 0, 2, 2);
+
+  auto bbs = bs.block<2, 1>(0, 0, 2, 1);
 
 }
 
@@ -154,9 +157,105 @@ void coutExecTime(std::chrono::steady_clock::time_point(*f)()) {
   std::cout << "-- exit time " << std::chrono::duration<double>(t1 - t0).count() << std::endl;
 }
 
-int main(int argc, char* argv[]) {
+void testMapWithStride() {
+  {
+    Eigen::VectorXf v(18);
+    for (int i = 0; i < v.size(); i++) {
+      v(i) = i;
+    }
 
+    Eigen::Map<Eigen::Matrix3f, 0, Eigen::OuterStride<>> m33(v.data(), 3, 3, Eigen::OuterStride<>(6));
+    std::cout << m33 << std::endl << std::endl;
+
+  }
+  // sparse mat
+  {
+    Eigen::SparseMatrix<float> s(8,4);
+    s.reserve(20);
+
+    int c = 0;
+
+    //column 0
+    s.startVec(0);
+    s.insertBack(0, 0) = c++;
+    s.insertBack(1, 0) = c++;
+
+    s.insertBack(4, 0) = c++;
+    s.insertBack(5, 0) = c++;
+
+    //column 1
+    s.startVec(1);
+    s.insertBack(0, 1) = c++;
+    s.insertBack(1, 1) = c++;
+
+    s.insertBack(4, 1) = c++;
+    s.insertBack(5, 1) = c++;
+
+    //column 2
+    s.startVec(2);
+    s.insertBack(0, 2) = c++;
+    s.insertBack(1, 2) = c++;
+
+    s.insertBack(2, 2) = c++;
+    s.insertBack(3, 2) = c++;
+
+    s.insertBack(4, 2) = c++;
+    s.insertBack(5, 2) = c++;
+
+    //column 3
+    s.startVec(3);
+    s.insertBack(0, 3) = c++;
+    s.insertBack(1, 3) = c++;
+
+    s.insertBack(2, 3) = c++;
+    s.insertBack(3, 3) = c++;
+
+    s.insertBack(4, 3) = c++;
+    s.insertBack(5, 3) = c++;
+
+    s.finalize();
+
+    Eigen::MatrixXf d = s;
+
+
+    //Eigen::Map<Eigen::Matrix2f, 0, Eigen::OuterStride<>> mXX(nullptr);
+
+    Eigen::Map<Eigen::Matrix2f, 0, Eigen::OuterStride<>> m00(s.coeffs().data(), 2, 2, Eigen::OuterStride<>(4));
+    std::cout << "B_00 " << std::endl << d.block<2, 2>(0, 0) << std::endl << std::endl;
+    std::cout << "m_00 " << std::endl << m00 << std::endl << std::endl;
+    
+    Eigen::Map<Eigen::Matrix2f, 0, Eigen::OuterStride<>> m20(s.coeffs().data() + 2, 2, 2, Eigen::OuterStride<>(4));
+    std::cout << "B_20 " << std::endl << d.block<2, 2>(4, 0) << std::endl << std::endl;
+    std::cout << "m_20 " << std::endl << m20 << std::endl << std::endl;
+
+    Eigen::Map<Eigen::Matrix2f, 0, Eigen::OuterStride<>> m01(s.coeffs().data() + 8, 2, 2, Eigen::OuterStride<>(6));
+    std::cout << "B_01 " << std::endl << d.block<2, 2>(0, 2) << std::endl << std::endl;
+    std::cout << "m_01 " << std::endl << m01 << std::endl << std::endl;
+
+    Eigen::Map<Eigen::Matrix2f, 0, Eigen::OuterStride<>> m11(s.coeffs().data() + 10, 2, 2, Eigen::OuterStride<>(6));
+    std::cout << "B_11 " << std::endl << d.block<2, 2>(2, 2) << std::endl << std::endl;
+    std::cout << "m_11 " << std::endl << m11 << std::endl << std::endl;
+
+    Eigen::Map<Eigen::Matrix2f, 0, Eigen::OuterStride<>> m21(s.coeffs().data() + 12, 2, 2, Eigen::OuterStride<>(6));
+    std::cout << "B_21 " << std::endl << d.block<2, 2>(4, 2) << std::endl << std::endl;
+    std::cout << "m_21 " << std::endl << m21 << std::endl << std::endl;
+
+    m21 = m21 * 2;
+    std::cout << "B_21 " << std::endl << d.block<2, 2>(4, 2) << std::endl << std::endl;
+    std::cout << "m_21 " << std::endl << m21 << std::endl << std::endl;
+
+  }
+
+}
+
+int main(int argc, char* argv[]) {
+  // what is inside Block?
   testBlocks();
+
+  testMapWithStride();
+
+
+  // slicing
 
   // timing 
   coutExecTime(testSetZeroTime);

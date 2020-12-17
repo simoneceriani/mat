@@ -12,7 +12,7 @@ namespace mat {
   template<int Ordering>
   class SparsityPattern {
     std::vector<std::set<int>> _sp;
-    mutable int _count;
+    int _count;
 
   public:
     SparsityPattern(int nr, int nc);
@@ -22,15 +22,15 @@ namespace mat {
 
     void add(int i, int j) {
       if (Ordering == mat::ColMajor) {
-        _sp[j].insert(i);
-        _count = -1;
+        auto ret = _sp[j].insert(i);
+        if (ret.second) _count++;
       }
       else if (Ordering == mat::RowMajor) {
-        _sp[i].insert(j);
-        _count = -1;
+        auto ret = _sp[i].insert(j);
+        if (ret.second) _count++;
       }
       else {
-        assert(false && "how do you end up here?!?");
+        ASSERT_FALSE();
       }
     }
 
@@ -42,17 +42,11 @@ namespace mat {
         return _sp[i].find(j) != _sp[i].end();
       }
       else {
-        assert(false && "how do you end up here?!?");
+        ASSERT_FALSE();
       }
     }
 
     int count() const {
-      if (_count == -1) {
-        _count = 0;
-        for (int k = 0; k < _sp.size(); k++) {
-          _count += _sp[k].size();
-        }
-      }
       return _count;
     }
 
@@ -67,7 +61,5 @@ namespace mat {
     }
 
   };
-
-
 
 }

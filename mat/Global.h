@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cassert>
+
+#define ASSERT_FALSE() assert(false && "how do you end up here?!?");
+
 namespace mat {
 
   constexpr int Fixed = 0;
