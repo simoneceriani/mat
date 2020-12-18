@@ -13,6 +13,7 @@ namespace mat {
   constexpr int BlockDense = 1;
   constexpr int BlockDiagonal = 2;
   constexpr int BlockSparse = 3;
+  constexpr int BlockCoeffSparse = 4;
 
   constexpr int ColMajor = 0;
   constexpr int RowMajor = 1;

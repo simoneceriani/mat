@@ -4,6 +4,8 @@
 #include "MatrixBlockDescriptor.hpp"
 #include "MatrixBlockBase.hpp"
 
+#include "Utils.hpp"
+
 namespace mat {
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
@@ -71,20 +73,7 @@ namespace mat {
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  template <class ForwardIterator>
-  ForwardIterator SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::binary_search(ForwardIterator first, ForwardIterator last, int val)
-  {
-    first = std::lower_bound(first, last, val);
-    if (first != last) {
-      if (val == *first) return first;
-      return last;
-    }
-    return last;
-  }
-
-
-  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  int SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::searchBlockUID(int r, int c) {
+  int SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::searchBlockUID(int r, int c) const {
     if (Ordering == mat::RowMajor) {
       int start = _outerStarts[r];
       int end = _outerStarts[r + 1];
@@ -92,7 +81,7 @@ namespace mat {
       auto itS = _innerIndexes.begin() + start;
       auto itE = _innerIndexes.begin() + end;
 
-      auto id = binary_search(itS, itE, c);
+      auto id = Utils::binary_search(itS, itE, c);
       if (id == itE) return -1;
       else return id - _innerIndexes.begin();
     }
@@ -103,7 +92,7 @@ namespace mat {
       auto itS = _innerIndexes.begin() + start;
       auto itE = _innerIndexes.begin() + end;
 
-      auto id = binary_search(itS, itE, r);
+      auto id = Utils::binary_search(itS, itE, r);
       if (id == itE) return -1;
       else return id - _innerIndexes.begin();
     }
@@ -112,6 +101,8 @@ namespace mat {
     }
     return -1;
   }
+
+  //--------------------------------------------------------------------------------------------------------------------------------------------
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   template<class BaseT>

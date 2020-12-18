@@ -58,13 +58,10 @@ namespace mat {
       return int(_mat.size());
     }
 
-    template <class ForwardIterator>
-    static ForwardIterator binary_search(ForwardIterator first, ForwardIterator last, int val);
-
     // -1 if does not exist
-    int searchBlockUID(int r, int c);
+    int searchBlockUID(int r, int c) const;
 
-    bool hasBlock(int r, int c) {
+    bool hasBlock(int r, int c) const {
       return searchBlockUID(r, c) >= 0;
     }
 
@@ -154,13 +151,13 @@ namespace mat {
 
     // iterate on row blocks (if block are stored in row major)
     template<typename RetType = InnerIterator<SparseMatrixBlock>>
-    std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int c) {
-      return InnerIterator<SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);
+    std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int r) {
+      return InnerIterator<SparseMatrixBlock>(*this, _outerStarts[r], _outerStarts[r + 1]);
     }
 
     template<typename RetType = InnerIterator<const SparseMatrixBlock>>
-    std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int c) const {
-      return InnerIterator<const SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);
+    std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int r) const {
+      return InnerIterator<const SparseMatrixBlock>(*this, _outerStarts[r], _outerStarts[r + 1]);
     }
 
   };

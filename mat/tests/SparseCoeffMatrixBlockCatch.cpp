@@ -2,7 +2,10 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "mat/SparsityPattern.h"
-#include "mat/SparseMatrixBlock.hpp"
+#include "mat/SparseCoeffMatrixBlock.hpp"
+
+#include <iostream>
+#define DEBUGME if(true)
 
 // let use W matrix in BA case
 static constexpr int camSize = 6;
@@ -10,7 +13,7 @@ static constexpr int pointSize = 3;
 static constexpr int numCams = 10;
 static constexpr int numPoints = 13;
 
-TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock", "[SparseMatrixBlock]", ((int Ordering, int BR, int BC, int NBR, int NBC), Ordering, BR, BC, NBR, NBC),
+TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock", "[SparseCoeffMatrixBlock]", ((int Ordering, int BR, int BC, int NBR, int NBC), Ordering, BR, BC, NBR, NBC),
   (mat::RowMajor, camSize, pointSize, numCams, numPoints),
   (mat::RowMajor, camSize, pointSize, numCams, mat::Dynamic),
   (mat::RowMajor, camSize, pointSize, mat::Dynamic, numPoints),
@@ -64,7 +67,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock", "[SparseMatrixBlock]", ((int Orderin
 
   REQUIRE(sp.count() == count);
 
-  using MatT = mat::SparseMatrixBlock<double, Ordering, BR, BC, NBR, NBC>;
+  using MatT = mat::SparseCoeffMatrixBlock<double, Ordering, BR, BC, NBR, NBC>;
 
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
@@ -72,10 +75,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock", "[SparseMatrixBlock]", ((int Orderin
     REQUIRE(mat->numBlocksRow() == (NBR == mat::Dynamic ? 0 : NBR));
     REQUIRE(mat->numBlocksCol() == (NBC == mat::Dynamic ? 0 : NBC));
 
-    REQUIRE(mat->mat().size() == 0);
-
     mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), sp);
-    REQUIRE(mat->mat().size() == sp.count());
 
   }
   SECTION("sized ctor") {
@@ -93,7 +93,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock", "[SparseMatrixBlock]", ((int Orderin
 }
 
 
-TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-RowMajor", "[SparseMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
+TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock-RowMajor", "[SparseCoeffMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
   (2, 3, 3, 4),
   (2, 3, 3, Eigen::Dynamic),
   (2, 3, Eigen::Dynamic, 4),
@@ -121,31 +121,33 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-RowMajor", "[SparseMatrixBlock]", ((in
   sp.add(1, 0); sp.add(1, 2); sp.add(1, 3);
   sp.add(2, 0); sp.add(2, 2);
 
-  using MatT = mat::SparseMatrixBlock<double, mat::RowMajor, BR, BC, NBR, NBC>;
+  using MatT = mat::SparseCoeffMatrixBlock<double, mat::RowMajor, BR, BC, NBR, NBC>;
   MatT mat(typename MatT::BlockDescriptor(2, 3, 3, 4), sp);
 
   REQUIRE(mat.nonZeroBlocks() == sp.count());
 
-  REQUIRE(mat.searchBlockUID(0, 0) == 0);
-  REQUIRE(mat.searchBlockUID(0, 1) == -1);
-  REQUIRE(mat.searchBlockUID(0, 2) == -1);
-  REQUIRE(mat.searchBlockUID(0, 3) == 1);
+  REQUIRE(mat.searchBlockInner(0, 0) == 0);
+  REQUIRE(mat.searchBlockInner(0, 1) == -1);
+  REQUIRE(mat.searchBlockInner(0, 2) == -1);
+  REQUIRE(mat.searchBlockInner(0, 3) == 1);
 
-  REQUIRE(mat.searchBlockUID(1, 0) == 2);
-  REQUIRE(mat.searchBlockUID(1, 1) == -1);
-  REQUIRE(mat.searchBlockUID(1, 2) == 3);
-  REQUIRE(mat.searchBlockUID(1, 3) == 4);
+  REQUIRE(mat.searchBlockInner(1, 0) == 0);
+  REQUIRE(mat.searchBlockInner(1, 1) == -1);
+  REQUIRE(mat.searchBlockInner(1, 2) == 1);
+  REQUIRE(mat.searchBlockInner(1, 3) == 2);
 
-  REQUIRE(mat.searchBlockUID(2, 0) == 5);
-  REQUIRE(mat.searchBlockUID(2, 1) == -1);
-  REQUIRE(mat.searchBlockUID(2, 2) == 6);
-  REQUIRE(mat.searchBlockUID(2, 3) == -1);
+  REQUIRE(mat.searchBlockInner(2, 0) == 0);
+  REQUIRE(mat.searchBlockInner(2, 1) == -1);
+  REQUIRE(mat.searchBlockInner(2, 2) == 1);
+  REQUIRE(mat.searchBlockInner(2, 3) == -1);
 
   // inefficient!
   for (int r = 0; r < mat.numBlocksRow(); r++) {
     for (int c = 0; c < mat.numBlocksCol(); c++) {
       if (mat.hasBlock(r, c)) {
-        mat.block(r, c).setConstant(r + c / 1.0);
+        DEBUGME std::cout << mat.block(r, c) << std::endl << std::endl;
+        mat.block(r, c).setConstant(double(r) + double(c) / 10.0);
+        DEBUGME std::cout << mat.block(r, c) << std::endl << std::endl;
       }
     }
   }
@@ -153,7 +155,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-RowMajor", "[SparseMatrixBlock]", ((in
   for (int r = 0; r < mat.numBlocksRow(); r++) {
     for (int c = 0; c < mat.numBlocksCol(); c++) {
       if (mat.hasBlock(r, c)) {
-        REQUIRE((mat.block(r, c).array() == r + c / 1.0).all());
+        REQUIRE((mat.block(r, c).array() == double(r) + double(c) / 10.0).all());
       }
     }
   }
@@ -238,12 +240,12 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-RowMajor", "[SparseMatrixBlock]", ((in
   }
 
 }
-
+//
 //-------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------------------------------------
 
-TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
+TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock-ColMajor", "[SparseCoeffMatrixBlock]", ((int BR, int BC, int NBR, int NBC), BR, BC, NBR, NBC),
   (2, 3, 3, 4),
   (2, 3, 3, Eigen::Dynamic),
   (2, 3, Eigen::Dynamic, 4),
@@ -271,32 +273,33 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
   sp.add(1, 0); sp.add(1, 2); sp.add(1, 3);
   sp.add(2, 0); sp.add(2, 2);
 
-  using MatT = mat::SparseMatrixBlock<double, mat::ColMajor, BR, BC, NBR, NBC>;
+  using MatT = mat::SparseCoeffMatrixBlock<double, mat::ColMajor, BR, BC, NBR, NBC>;
   MatT mat(typename MatT::BlockDescriptor(2, 3, 3, 4), sp);
 
   REQUIRE(mat.nonZeroBlocks() == sp.count());
 
-  REQUIRE(mat.searchBlockUID(0, 0) == 0);
-  REQUIRE(mat.searchBlockUID(1, 0) == 1);
-  REQUIRE(mat.searchBlockUID(2, 0) == 2);
+  REQUIRE(mat.searchBlockInner(0, 0) == 0);
+  REQUIRE(mat.searchBlockInner(1, 0) == 1);
+  REQUIRE(mat.searchBlockInner(2, 0) == 2);
 
-  REQUIRE(mat.searchBlockUID(0, 1) == -1);
-  REQUIRE(mat.searchBlockUID(1, 1) == -1);
-  REQUIRE(mat.searchBlockUID(2, 1) == -1);
+  REQUIRE(mat.searchBlockInner(0, 1) == -1);
+  REQUIRE(mat.searchBlockInner(1, 1) == -1);
+  REQUIRE(mat.searchBlockInner(2, 1) == -1);
 
-  REQUIRE(mat.searchBlockUID(0, 2) == -1);
-  REQUIRE(mat.searchBlockUID(1, 2) == 3);
-  REQUIRE(mat.searchBlockUID(2, 2) == 4);
+  REQUIRE(mat.searchBlockInner(0, 2) == -1);
+  REQUIRE(mat.searchBlockInner(1, 2) == 0);
+  REQUIRE(mat.searchBlockInner(2, 2) == 1);
 
-  REQUIRE(mat.searchBlockUID(0, 3) == 5);
-  REQUIRE(mat.searchBlockUID(1, 3) == 6);
-  REQUIRE(mat.searchBlockUID(2, 3) == -1);
+  REQUIRE(mat.searchBlockInner(0, 3) == 0);
+  REQUIRE(mat.searchBlockInner(1, 3) == 1);
+  REQUIRE(mat.searchBlockInner(2, 3) == -1);
 
   // inefficient!
   for (int r = 0; r < mat.numBlocksRow(); r++) {
     for (int c = 0; c < mat.numBlocksCol(); c++) {
       if (mat.hasBlock(r, c)) {
-        mat.block(r, c).setConstant(r + c / 1.0);
+        mat.block(r, c).setConstant(double(r) + double(c) / 10.0);
+        DEBUGME std::cout << mat.block(r, c) << std::endl << std::endl;
       }
     }
   }
@@ -304,7 +307,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
   for (int r = 0; r < mat.numBlocksRow(); r++) {
     for (int c = 0; c < mat.numBlocksCol(); c++) {
       if (mat.hasBlock(r, c)) {
-        REQUIRE((mat.block(r, c).array() == r + c / 1.0).all());
+        REQUIRE((mat.block(r, c).array() == double(r) + double(c) / 10.0).all());
       }
     }
   }
@@ -347,13 +350,13 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
     //auto & bij = it.block();
     //bij.setConstant(it.row() + 3 / 1.0);
     auto m = it.block();
-    REQUIRE((it.block().array() == it.row() + 3 / 1.0).all());
-    REQUIRE((m.array() == it.row() + 3 / 1.0).all());
+    REQUIRE((it.block().array() == it.row() + 3 / 10.0).all());
+    REQUIRE((m.array() == it.row() + 3 / 10.0).all());
     auto vold = it.block()(0, 0);
     it.block().setConstant(23);
     REQUIRE((it.block().array() == 23).all());
     it.block().setConstant(vold);
-    REQUIRE((it.block().array() == it.row() + 3 / 1.0).all());
+    REQUIRE((it.block().array() == it.row() + 3 / 10.0).all());
 
     it++;
     REQUIRE(it() == 6);
@@ -400,7 +403,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
     REQUIRE(it() != it.end());
 
     auto m = it.block();
-    REQUIRE((it.block().array() == it.row() + 3 / 1.0).all());
+    REQUIRE((it.block().array() == it.row() + 3 / 10.0).all());
     // it.block().setConstant(23); // does not compile!! ok!
 
     it++;
