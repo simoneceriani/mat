@@ -5,12 +5,31 @@
 #include <Eigen/Sparse>
 #include <vector>
 
+#include "DimensionDescriptor.h"
+#include "MatrixBlockDescriptor.h"
+
 namespace mat {
+
+  template<class T, int BR, int NBR = mat::Dynamic>
+  class VectorBlockTraits {
+  public:
+    using BlockTraits = typename DimensionDescriptor<BR, NBR>::Traits;
+
+    using StorageType = Eigen::Matrix<T, BlockTraits::numElementsAtCompileTime, 1>;
+    using SubVectorType = Eigen::Matrix<T, BlockTraits::blockSizeAtCompileTime, 1>;
+    using SegmentType = typename Eigen::Block<StorageType, BlockTraits::blockSizeAtCompileTime, 1>;
+    using ConstSegmentType = typename Eigen::Block<const StorageType, BlockTraits::blockSizeAtCompileTime, 1>;
+  };
+
+  //--------------------------------------------------------------------------------------------------------------------------
+  //--------------------------------------------------------------------------------------------------------------------------
 
   template<int matType, class T, int BR, int BC, int NBR = mat::Dynamic, int NBC = mat::Dynamic>
   class MatrixBlockTypeTraits {
 
   };
+
+  //--------------------------------------------------------------------------------------------------------------------------
 
   template<class T, int BR, int BC, int NBR, int NBC>
   class MatrixBlockTypeTraits<mat::BlockDense, T, BR, BC, NBR, NBC> {
@@ -26,6 +45,8 @@ namespace mat {
 
   };
 
+  //----------------------------------------------------------------------------------------------------
+
   template<class T, int BR, int BC, int NBR, int NBC>
   class MatrixBlockTypeTraits<mat::BlockDiagonal, T, BR, BC, NBR, NBC> {
   public:
@@ -39,6 +60,8 @@ namespace mat {
     using ConstBlockType = const SubMatrixType &;
 
   };
+
+  //----------------------------------------------------------------------------------------------------
 
   template<class T, int BR, int BC, int NBR, int NBC>
   class MatrixBlockTypeTraits<mat::BlockSparse, T, BR, BC, NBR, NBC> {
