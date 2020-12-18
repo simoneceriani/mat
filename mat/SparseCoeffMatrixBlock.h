@@ -109,11 +109,11 @@ namespace mat {
     }
 
     inline BlockType blockOuterInner(int o, int in, int r, int c) {
-      return BlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), rowBlockSize(r), colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
+      return BlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), this->rowBlockSize(r), this->colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
     }
 
     inline ConstBlockType blockOuterInner(int o, int in, int r, int c) const {
-      return ConstBlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), rowBlockSize(r), colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
+      return ConstBlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), this->rowBlockSize(r), this->colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
     }
 
     inline BlockType block(int r, int c) {
