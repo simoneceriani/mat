@@ -126,20 +126,20 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-RowMajor", "[SparseMatrixBlock]", ((in
 
   REQUIRE(mat.nonZeroBlocks() == sp.count());
 
-  REQUIRE(mat.searchBlockUID(0, 0) == 0);
-  REQUIRE(mat.searchBlockUID(0, 1) == -1);
-  REQUIRE(mat.searchBlockUID(0, 2) == -1);
-  REQUIRE(mat.searchBlockUID(0, 3) == 1);
+  REQUIRE(mat.blockUID(0, 0) == 0);
+  REQUIRE(mat.blockUID(0, 1) == -1);
+  REQUIRE(mat.blockUID(0, 2) == -1);
+  REQUIRE(mat.blockUID(0, 3) == 1);
 
-  REQUIRE(mat.searchBlockUID(1, 0) == 2);
-  REQUIRE(mat.searchBlockUID(1, 1) == -1);
-  REQUIRE(mat.searchBlockUID(1, 2) == 3);
-  REQUIRE(mat.searchBlockUID(1, 3) == 4);
+  REQUIRE(mat.blockUID(1, 0) == 2);
+  REQUIRE(mat.blockUID(1, 1) == -1);
+  REQUIRE(mat.blockUID(1, 2) == 3);
+  REQUIRE(mat.blockUID(1, 3) == 4);
 
-  REQUIRE(mat.searchBlockUID(2, 0) == 5);
-  REQUIRE(mat.searchBlockUID(2, 1) == -1);
-  REQUIRE(mat.searchBlockUID(2, 2) == 6);
-  REQUIRE(mat.searchBlockUID(2, 3) == -1);
+  REQUIRE(mat.blockUID(2, 0) == 5);
+  REQUIRE(mat.blockUID(2, 1) == -1);
+  REQUIRE(mat.blockUID(2, 2) == 6);
+  REQUIRE(mat.blockUID(2, 3) == -1);
 
   // inefficient!
   for (int r = 0; r < mat.numBlocksRow(); r++) {
@@ -276,21 +276,21 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
 
   REQUIRE(mat.nonZeroBlocks() == sp.count());
 
-  REQUIRE(mat.searchBlockUID(0, 0) == 0);
-  REQUIRE(mat.searchBlockUID(1, 0) == 1);
-  REQUIRE(mat.searchBlockUID(2, 0) == 2);
+  REQUIRE(mat.blockUID(0, 0) == 0);
+  REQUIRE(mat.blockUID(1, 0) == 1);
+  REQUIRE(mat.blockUID(2, 0) == 2);
 
-  REQUIRE(mat.searchBlockUID(0, 1) == -1);
-  REQUIRE(mat.searchBlockUID(1, 1) == -1);
-  REQUIRE(mat.searchBlockUID(2, 1) == -1);
+  REQUIRE(mat.blockUID(0, 1) == -1);
+  REQUIRE(mat.blockUID(1, 1) == -1);
+  REQUIRE(mat.blockUID(2, 1) == -1);
 
-  REQUIRE(mat.searchBlockUID(0, 2) == -1);
-  REQUIRE(mat.searchBlockUID(1, 2) == 3);
-  REQUIRE(mat.searchBlockUID(2, 2) == 4);
+  REQUIRE(mat.blockUID(0, 2) == -1);
+  REQUIRE(mat.blockUID(1, 2) == 3);
+  REQUIRE(mat.blockUID(2, 2) == 4);
 
-  REQUIRE(mat.searchBlockUID(0, 3) == 5);
-  REQUIRE(mat.searchBlockUID(1, 3) == 6);
-  REQUIRE(mat.searchBlockUID(2, 3) == -1);
+  REQUIRE(mat.blockUID(0, 3) == 5);
+  REQUIRE(mat.blockUID(1, 3) == 6);
+  REQUIRE(mat.blockUID(2, 3) == -1);
 
   // inefficient!
   for (int r = 0; r < mat.numBlocksRow(); r++) {
@@ -313,28 +313,34 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
     auto it = mat.colBegin(0);
     REQUIRE(it() == 0);
     REQUIRE(it.row() == 0);
+    REQUIRE(it.col () == 0);
     REQUIRE(it() != it.end());
     it++;
     REQUIRE(it() == 1);
     REQUIRE(it.row() == 1);
+    REQUIRE(it.col() == 0);
     REQUIRE(it() != it.end());
     it++;
     REQUIRE(it() == 2);
     REQUIRE(it.row() == 2);
+    REQUIRE(it.col() == 0);
     REQUIRE(it() != it.end());
     it++;
     REQUIRE(it() == it.end());
 
     it = mat.colBegin(1);
+    REQUIRE(it.col() == 1);
     REQUIRE(it() == it.end());
 
     it = mat.colBegin(2);
     REQUIRE(it() == 3);
     REQUIRE(it.row() == 1);
+    REQUIRE(it.col() == 2);
     REQUIRE(it() != it.end());
     it++;
     REQUIRE(it() == 4);
     REQUIRE(it.row() == 2);
+    REQUIRE(it.col() == 2);
     REQUIRE(it() != it.end());
     it++;
     REQUIRE(it() == it.end());
@@ -342,6 +348,7 @@ TEMPLATE_TEST_CASE_SIG("SparseMatrixBlock-ColMajor", "[SparseMatrixBlock]", ((in
     it = mat.colBegin(3);
     REQUIRE(it() == 5);
     REQUIRE(it.row() == 0);
+    REQUIRE(it.col() == 3);
     REQUIRE(it() != it.end());
 
     //auto & bij = it.block();

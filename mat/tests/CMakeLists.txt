@@ -23,6 +23,7 @@ set(TESTS_LIST
   MatrixBlockDescriptorCatch.cpp
   DenseMatrixBlockCatch.cpp
   DiagonalMatrixBlockCatch.cpp
+  DiagonalMatrixBlockIterableCatch.cpp
   SparsityPatternCatch.cpp
   SparseMatrixBlockCatch.cpp
   SparsityPatternBlockDescriptorCatch.cpp

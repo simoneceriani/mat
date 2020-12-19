@@ -21,6 +21,17 @@ namespace mat {
   SparsityPattern<Ordering>::~SparsityPattern() {
 
   }
+  
+  // static
+  template<int Ordering>
+  SparsityPattern<Ordering> SparsityPattern<Ordering>::makeDiagonal(int nr, int nc) {
+    int n = std::min(nr, nc);
+    SparsityPattern<Ordering> ret(n,n);
+    for (int i = 0; i < ret.outerSize(); i++) {
+      ret.add(i, i);
+    }
+    return ret;
+  }
 
   template<int Ordering>
   void SparsityPattern<Ordering>::clear() {

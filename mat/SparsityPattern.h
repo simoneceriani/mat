@@ -18,6 +18,8 @@ namespace mat {
     SparsityPattern(int nr, int nc);
     virtual ~SparsityPattern();
 
+    static SparsityPattern makeDiagonal(int nr, int nc);
+
     void clear();
 
     void add(int i, int j) {
@@ -61,5 +63,8 @@ namespace mat {
     }
 
   };
+
+  using SparsityPatternColMajor = SparsityPattern<mat::ColMajor>;
+  using SparsityPatternRowMajor = SparsityPattern<mat::RowMajor>;
 
 }

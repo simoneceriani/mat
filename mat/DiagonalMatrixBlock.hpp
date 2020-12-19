@@ -46,5 +46,58 @@ namespace mat {
       _mat[i].setZero();
     }    
   }
+  //----------------------------------------------------------------------------------------------------------------
+
+  template< class T, int BR, int BC, int NBR, int NBC >
+  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable() : DiagonalMatrixBlock() {
+
+  }
+
+  // with block
+  template< class T, int BR, int BC, int NBR, int NBC >
+  template<int Ordering>
+  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) :
+    DiagonalMatrixBlock(blockDesc) 
+  {
+    // check sparse pattern is diagonal
+    for (int o = 0; o < sp.outerSize(); o++) {
+      const auto & ins = sp.inner(o);
+      assert(ins.size() == 1);
+      assert(*(ins.begin()) == o);
+    }
+  }
+
+  template< class T, int BR, int BC, int NBR, int NBC >
+  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::~DiagonalMatrixBlockIterable() {
+
+  }
+
+  template< class T, int BR, int BC, int NBR, int NBC >
+  template<int Ordering>
+  void DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp)  {
+    DiagonalMatrixBlock::resize(blockDesc);
+    // check sparse pattern is diagonal
+    for (int o = 0; o < sp.outerSize(); o++) {
+      const auto& ins = sp.inner(o);
+      assert(ins.size() == 1);
+      assert(*(ins.begin()) == o);
+    }
+  }
+
+
+  //----------------------------------------------------------------------------------------------------------------
+
+  template< class T, int BR, int BC, int NBR, int NBC >
+  template<class BaseT>
+  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT& sm, int id) :
+    _curId(id), _sm(&sm), _lastId(id + 1) {
+
+  }
+  template< class T, int BR, int BC, int NBR, int NBC >
+  template<class BaseT>
+  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::InnerIterator<BaseT>::~InnerIterator() {
+
+  }
+
 
 }

@@ -38,9 +38,32 @@ namespace mat {
 
     void resizeImpl(const SparsityPattern<Ordering>& sp);
 
+    inline int row(int outer, int inner) const {
+      if (Ordering == mat::ColMajor) {
+        return inner;
+      }
+      else if (Ordering == mat::RowMajor) {
+        return outer;
+      }
+      else {
+        ASSERT_FALSE();
+      }
+    }
+
+    inline int col(int outer, int inner) const {
+      if (Ordering == mat::ColMajor) {
+        return outer;
+      }
+      else if (Ordering == mat::RowMajor) {
+        return inner;
+      }
+      else {
+        ASSERT_FALSE();
+      }
+    }
   public:
     SparseMatrixBlock();
-    SparseMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering> &sp);
+    SparseMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
 
     virtual ~SparseMatrixBlock();
 
@@ -59,10 +82,10 @@ namespace mat {
     }
 
     // -1 if does not exist
-    int searchBlockUID(int r, int c) const;
+    int blockUID(int r, int c) const;
 
     bool hasBlock(int r, int c) const {
-      return searchBlockUID(r, c) >= 0;
+      return blockUID(r, c) >= 0;
     }
 
     inline BlockType blockByUID(int uid) {
@@ -74,11 +97,11 @@ namespace mat {
     }
 
     inline BlockType block(int r, int c) {
-      return _mat[searchBlockUID(r, c)];
+      return _mat[blockUID(r, c)];
     }
 
     inline ConstBlockType block(int r, int c) const {
-      return _mat[searchBlockUID(r, c)];
+      return _mat[blockUID(r, c)];
     }
 
     void setZero();
@@ -86,20 +109,26 @@ namespace mat {
     // iterator on inner dimension 
     template<class BaseT>
     class InnerIterator {
+      int _outer;
+
       BaseT* _sm;
       int _curId;
       int _lastId;
 
     public:
-      InnerIterator(BaseT & _sm, int curId, int lastId);
+      InnerIterator(BaseT& _sm, int outer, int curId, int lastId);
       virtual ~InnerIterator();
-      
-      inline int operator()() {
+
+      inline int operator()() const {
         assert(_curId <= _lastId);
         return _curId;
       }
 
-      inline int end() {
+      inline int blockUID() const {
+        return _curId;
+      }
+
+      inline int end() const {
         return _lastId;
       }
 
@@ -112,17 +141,19 @@ namespace mat {
         _curId++;
       }
 
-      template<typename RetType = int>
-      std::enable_if_t<IsColMajor<Ordering>::value, RetType> row() {
+      int row() const {
         assert(_curId <= _lastId);
-        return _sm->_innerIndexes[_curId];
+        int inner = _sm->_innerIndexes[_curId];
+        return _sm->row(_outer, inner);
       }
 
-      template<typename RetType = int>
-      std::enable_if_t<IsRowMajor<Ordering>::value, RetType> col() {
+
+      int col() const {
         assert(_curId <= _lastId);
-        return _sm->_innerIndexes[_curId];
+        int inner = _sm->_innerIndexes[_curId];
+        return _sm->col(_outer, inner);
       }
+
 
       template<typename RetType = BlockType>
       inline std::enable_if_t<!std::is_const<BaseT>::value, RetType> block() {
@@ -141,23 +172,23 @@ namespace mat {
     // iterate on column blocks (if block are stored in col major)
     template<typename RetType = InnerIterator<SparseMatrixBlock>>
     std::enable_if_t<IsColMajor<Ordering>::value, RetType> colBegin(int c) {
-      return InnerIterator<SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);
+      return InnerIterator<SparseMatrixBlock>(*this, c, _outerStarts[c], _outerStarts[c + 1]);
     }
 
     template<typename RetType = const InnerIterator<const SparseMatrixBlock>>
     std::enable_if_t<IsColMajor<Ordering>::value, RetType> colBegin(int c) const {
-      return InnerIterator<const SparseMatrixBlock>(*this, _outerStarts[c], _outerStarts[c + 1]);
+      return InnerIterator<const SparseMatrixBlock>(*this, c, _outerStarts[c], _outerStarts[c + 1]);
     }
 
     // iterate on row blocks (if block are stored in row major)
     template<typename RetType = InnerIterator<SparseMatrixBlock>>
     std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int r) {
-      return InnerIterator<SparseMatrixBlock>(*this, _outerStarts[r], _outerStarts[r + 1]);
+      return InnerIterator<SparseMatrixBlock>(*this, r, _outerStarts[r], _outerStarts[r + 1]);
     }
 
     template<typename RetType = InnerIterator<const SparseMatrixBlock>>
     std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int r) const {
-      return InnerIterator<const SparseMatrixBlock>(*this, _outerStarts[r], _outerStarts[r + 1]);
+      return InnerIterator<const SparseMatrixBlock>(*this, r, _outerStarts[r], _outerStarts[r + 1]);
     }
 
   };

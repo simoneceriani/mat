@@ -73,7 +73,7 @@ namespace mat {
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  int SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::searchBlockUID(int r, int c) const {
+  int SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::blockUID(int r, int c) const {
     if (Ordering == mat::RowMajor) {
       int start = _outerStarts[r];
       int end = _outerStarts[r + 1];
@@ -106,8 +106,8 @@ namespace mat {
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   template<class BaseT>
-  SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT & sm, int curId, int lastId)
-    : _sm(&sm), _curId(curId), _lastId(lastId) 
+  SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT & sm, int outer, int curId, int lastId)
+    : _sm(&sm), _outer(outer), _curId(curId), _lastId(lastId)
   {
 
   }

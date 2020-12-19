@@ -12,6 +12,7 @@
 
 namespace mat {
 
+
   template<class T, int Ordering, int BR, int BC, int NBR = mat::Dynamic, int NBC = mat::Dynamic >
   class SparseCoeffMatrixBlock final : public MatrixBlockBase<BR, BC, NBR, NBC> {
 
@@ -34,38 +35,19 @@ namespace mat {
   private:
     // 
     StorageType _mat;
-    std::vector<int> _outerStarts;
-    std::vector<int> _innerIndexes;
+    std::vector<int> _outerStarts;  // size = outersize
+    std::vector<int> _innerIndexes; // size = nnz blocks
+    std::vector<int> _uid2outer;  // size = nnz blocks, return the outer given uid
 
     // keep track on how to map raw sparse data to blocks
-    std::unique_ptr<SparsityPatternBlockDescriptor<Ordering>> _sparseCoeffMap;
+    std::shared_ptr<const SparsityPatternBlockDescriptor<Ordering>> _sparseCoeffMap;
 
     template <class OuterDesc, class InnerDesc>
     void populateSparseMat(const SparsityPattern<Ordering>& sp, const OuterDesc& outDesc, const InnerDesc& inDesc);
 
     void resizeImpl(const SparsityPattern<Ordering>& sp);
 
-  public:
-    SparseCoeffMatrixBlock();
-    SparseCoeffMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering> &sp);
-
-    virtual ~SparseCoeffMatrixBlock();
-
-    void resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
-
-    const StorageType& mat() const {
-      return _mat;
-    }
-
-    StorageType& mat() {
-      return _mat;
-    }
-
-    int nonZeroBlocks() const {
-      return int(_innerIndexes.size());
-    }
-
-    // -1 if does not exist
+    // -1 if does not exist, otherwise num of element in the inner (not UID)
     int searchBlockInner(int r, int c) const;
 
     inline int outer(int r, int c) const {
@@ -104,16 +86,54 @@ namespace mat {
       }
     }
 
-    bool hasBlock(int r, int c) {
-      return searchBlockInner(r, c) >= 0;
-    }
-
     inline BlockType blockOuterInner(int o, int in, int r, int c) {
       return BlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), this->rowBlockSize(r), this->colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
     }
 
     inline ConstBlockType blockOuterInner(int o, int in, int r, int c) const {
       return ConstBlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), this->rowBlockSize(r), this->colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
+    }
+
+  public:
+    SparseCoeffMatrixBlock();
+    SparseCoeffMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering> &sp);
+
+    virtual ~SparseCoeffMatrixBlock();
+
+    void resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+
+    const StorageType& mat() const {
+      return _mat;
+    }
+
+    StorageType& mat() {
+      return _mat;
+    }
+
+    int nonZeroBlocks() const {
+      return int(_innerIndexes.size());
+    }
+
+    int blockUID(int r, int c) const;
+
+    bool hasBlock(int r, int c) {
+      return searchBlockInner(r, c) >= 0;
+    }
+
+    inline BlockType blockByUID(int uid) {
+      int out = _uid2outer[uid];
+      int in = uid - _outerStarts[out];
+      int r = this->row(out, in);
+      int c = this->col(out, in);
+      return this->blockOuterInner(out, in, r, c);
+    }
+
+    inline ConstBlockType blockByUID(int uid) const {
+      int out = _uid2outer[uid];
+      int in = uid - _outerStarts[out];
+      int r = this->row(out, in);
+      int c = this->col(out, in);
+      return this->blockOuterInner(out, in, r, c);
     }
 
     inline BlockType block(int r, int c) {
@@ -145,12 +165,17 @@ namespace mat {
       InnerIterator(BaseT & _sm, int outer, int curId, int lastId);
       virtual ~InnerIterator();
       
-      inline int operator()() {
+      inline int operator()() const {
         assert(_curId <= _lastId);
         return _curId;
       }
 
-      inline int end() {
+      inline int blockUID() const {
+        assert(_curId <= _lastId);
+        return _curId;
+      }
+
+      inline int end() const {
         return _lastId;
       }
 
@@ -163,16 +188,18 @@ namespace mat {
         _curId++;
       }
 
-      template<typename RetType = int>
-      std::enable_if_t<IsColMajor<Ordering>::value, RetType> row() {
+      
+      int row() const {
         assert(_curId <= _lastId);
-        return _sm->_innerIndexes[_curId];
+        int inner = _sm->_innerIndexes[_curId];
+        return _sm->row(_outer, inner);
       }
 
-      template<typename RetType = int>
-      std::enable_if_t<IsRowMajor<Ordering>::value, RetType> col() {
+      
+      int col() const {
         assert(_curId <= _lastId);
-        return _sm->_innerIndexes[_curId];
+        int inner = _sm->_innerIndexes[_curId];
+        return _sm->col(_outer, inner);
       }
 
       template<typename RetType = BlockType>

@@ -75,12 +75,14 @@ namespace mat {
 
     // init block structure
     _innerIndexes.resize(sp.count());
+    _uid2outer.resize(sp.count());
     _outerStarts.resize(sp.outerSize() + 1);
     int count = 0;
     for (int o = 0; o < sp.outerSize(); o++) {
       _outerStarts[o] = count;
       for (int in : sp.inner(o)) {
         _innerIndexes[count] = in;
+        _uid2outer[count] = o;
         count++;
       }
     }
@@ -111,6 +113,36 @@ namespace mat {
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   void SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::setZero() {
     _mat.setZero();
+  }
+  
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
+  int SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::blockUID(int r, int c) const {
+    if (Ordering == mat::RowMajor) {
+      int start = _outerStarts[r];
+      int end = _outerStarts[r + 1];
+
+      auto itS = _innerIndexes.begin() + start;
+      auto itE = _innerIndexes.begin() + end;
+
+      auto id = Utils::binary_search(itS, itE, c);
+      if (id == itE) return -1;
+      else return id - _innerIndexes.begin();
+    }
+    else if (Ordering == mat::ColMajor) {
+      int start = _outerStarts[c];
+      int end = _outerStarts[c + 1];
+
+      auto itS = _innerIndexes.begin() + start;
+      auto itE = _innerIndexes.begin() + end;
+
+      auto id = Utils::binary_search(itS, itE, r);
+      if (id == itE) return -1;
+      else return id - _innerIndexes.begin();
+    }
+    else {
+      ASSERT_FALSE();
+    }
+    return -1;
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >

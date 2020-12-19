@@ -5,7 +5,7 @@
 #include "mat/SparseCoeffMatrixBlock.hpp"
 
 #include <iostream>
-#define DEBUGME if(true)
+#define DEBUGME if(false)
 
 // let use W matrix in BA case
 static constexpr int camSize = 6;
@@ -126,20 +126,20 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock-RowMajor", "[SparseCoeffMatrixBlo
 
   REQUIRE(mat.nonZeroBlocks() == sp.count());
 
-  REQUIRE(mat.searchBlockInner(0, 0) == 0);
-  REQUIRE(mat.searchBlockInner(0, 1) == -1);
-  REQUIRE(mat.searchBlockInner(0, 2) == -1);
-  REQUIRE(mat.searchBlockInner(0, 3) == 1);
+  REQUIRE(mat.blockUID(0, 0) == 0);
+  REQUIRE(mat.blockUID(0, 1) == -1);
+  REQUIRE(mat.blockUID(0, 2) == -1);
+  REQUIRE(mat.blockUID(0, 3) == 1);
 
-  REQUIRE(mat.searchBlockInner(1, 0) == 0);
-  REQUIRE(mat.searchBlockInner(1, 1) == -1);
-  REQUIRE(mat.searchBlockInner(1, 2) == 1);
-  REQUIRE(mat.searchBlockInner(1, 3) == 2);
+  REQUIRE(mat.blockUID(1, 0) == 2);
+  REQUIRE(mat.blockUID(1, 1) == -1);
+  REQUIRE(mat.blockUID(1, 2) == 3);
+  REQUIRE(mat.blockUID(1, 3) == 4);
 
-  REQUIRE(mat.searchBlockInner(2, 0) == 0);
-  REQUIRE(mat.searchBlockInner(2, 1) == -1);
-  REQUIRE(mat.searchBlockInner(2, 2) == 1);
-  REQUIRE(mat.searchBlockInner(2, 3) == -1);
+  REQUIRE(mat.blockUID(2, 0) == 5);
+  REQUIRE(mat.blockUID(2, 1) == -1);
+  REQUIRE(mat.blockUID(2, 2) == 6);
+  REQUIRE(mat.blockUID(2, 3) == -1);
 
   // inefficient!
   for (int r = 0; r < mat.numBlocksRow(); r++) {
@@ -157,6 +157,17 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock-RowMajor", "[SparseCoeffMatrixBlo
       if (mat.hasBlock(r, c)) {
         REQUIRE((mat.block(r, c).array() == double(r) + double(c) / 10.0).all());
       }
+    }
+  }
+
+  // test block UID access
+  for (int uid = 0; uid < mat.nonZeroBlocks(); uid++) {
+    auto b = mat.blockByUID(uid);
+    b.setConstant(uid);
+    {
+      const auto& mc = mat;
+      auto bc = mc.blockByUID(uid);
+      REQUIRE((bc.array() == uid).all());
     }
   }
 
@@ -278,21 +289,21 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock-ColMajor", "[SparseCoeffMatrixBlo
 
   REQUIRE(mat.nonZeroBlocks() == sp.count());
 
-  REQUIRE(mat.searchBlockInner(0, 0) == 0);
-  REQUIRE(mat.searchBlockInner(1, 0) == 1);
-  REQUIRE(mat.searchBlockInner(2, 0) == 2);
+  REQUIRE(mat.blockUID(0, 0) == 0);
+  REQUIRE(mat.blockUID(1, 0) == 1);
+  REQUIRE(mat.blockUID(2, 0) == 2);
 
-  REQUIRE(mat.searchBlockInner(0, 1) == -1);
-  REQUIRE(mat.searchBlockInner(1, 1) == -1);
-  REQUIRE(mat.searchBlockInner(2, 1) == -1);
+  REQUIRE(mat.blockUID(0, 1) == -1);
+  REQUIRE(mat.blockUID(1, 1) == -1);
+  REQUIRE(mat.blockUID(2, 1) == -1);
 
-  REQUIRE(mat.searchBlockInner(0, 2) == -1);
-  REQUIRE(mat.searchBlockInner(1, 2) == 0);
-  REQUIRE(mat.searchBlockInner(2, 2) == 1);
+  REQUIRE(mat.blockUID(0, 2) == -1);
+  REQUIRE(mat.blockUID(1, 2) == 3);
+  REQUIRE(mat.blockUID(2, 2) == 4);
 
-  REQUIRE(mat.searchBlockInner(0, 3) == 0);
-  REQUIRE(mat.searchBlockInner(1, 3) == 1);
-  REQUIRE(mat.searchBlockInner(2, 3) == -1);
+  REQUIRE(mat.blockUID(0, 3) == 5);
+  REQUIRE(mat.blockUID(1, 3) == 6);
+  REQUIRE(mat.blockUID(2, 3) == -1);
 
   // inefficient!
   for (int r = 0; r < mat.numBlocksRow(); r++) {
@@ -412,6 +423,17 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffMatrixBlock-ColMajor", "[SparseCoeffMatrixBlo
     REQUIRE(it() != it.end());
     it++;
     REQUIRE(it() == it.end());
+  }
+
+  // test block UID access
+  for (int uid = 0; uid < mat.nonZeroBlocks(); uid++) {
+    auto b = mat.blockByUID(uid);
+    b.setConstant(uid);
+    {
+      const auto& mc = mat;
+      auto bc = mc.blockByUID(uid);
+      REQUIRE((bc.array() == uid).all());
+    }
   }
 
 }
