@@ -49,7 +49,7 @@ namespace mat {
   //----------------------------------------------------------------------------------------------------------------
 
   template< class T, int BR, int BC, int NBR, int NBC >
-  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable() : DiagonalMatrixBlock() {
+  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable() : DiagonalMatrixBlockT() {
 
   }
 
@@ -57,7 +57,7 @@ namespace mat {
   template< class T, int BR, int BC, int NBR, int NBC >
   template<int Ordering>
   DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) :
-    DiagonalMatrixBlock(blockDesc) 
+    DiagonalMatrixBlockT(blockDesc) 
   {
     // check sparse pattern is diagonal
     for (int o = 0; o < sp.outerSize(); o++) {
@@ -75,7 +75,7 @@ namespace mat {
   template< class T, int BR, int BC, int NBR, int NBC >
   template<int Ordering>
   void DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp)  {
-    DiagonalMatrixBlock::resize(blockDesc);
+    DiagonalMatrixBlockT::resize(blockDesc);
     // check sparse pattern is diagonal
     for (int o = 0; o < sp.outerSize(); o++) {
       const auto& ins = sp.inner(o);

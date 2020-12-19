@@ -40,16 +40,16 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable", "[DiagonalMatrixBlockItera
     REQUIRE(mat->numBlocksRow() == (NBR == mat::Dynamic ? 0 : NBR));
     REQUIRE(mat->numBlocksCol() == (NBC == mat::Dynamic ? 0 : NBC));
 
-    mat->resize(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+    mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
 
   }
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSize, pointSize), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
-    mat->resize(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSize, pointSize), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
+    mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   }
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
-    mat->resize(MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
+    mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   }
 
   REQUIRE(mat->numElementRows() == camSize * numCams);
@@ -59,12 +59,12 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable", "[DiagonalMatrixBlockItera
   REQUIRE(mat2.numElementRows() == camSize * numCams);
   REQUIRE(mat2.numElementCols() == pointSize * numPoints);
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   REQUIRE(mat3.numElementRows() == camSize * numCams);
   REQUIRE(mat3.numElementCols() == pointSize * numPoints);
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   REQUIRE(mat4.numElementRows() == camSize * numCams);
   REQUIRE(mat4.numElementCols() == pointSize * numPoints);
 
@@ -140,12 +140,12 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable-Square", "[DiagonalMatrixBlo
   REQUIRE(mat2.numElementRows() == camSize * numCams);
   REQUIRE(mat2.numElementCols() == camSize * numCams);
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numCams));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numCams));
   REQUIRE(mat3.numElementRows() == camSize * numCams);
   REQUIRE(mat3.numElementCols() == camSize * numCams);
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numCams));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numCams));
   REQUIRE(mat4.numElementRows() == camSize * numCams);
   REQUIRE(mat4.numElementCols() == camSize * numCams);
 
@@ -200,37 +200,37 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable-Var", "[DiagonalMatrixBlockI
     REQUIRE(mat->numBlocksRow() == (NBR == mat::Dynamic ? 0 : NBR));
     REQUIRE(mat->numBlocksCol() == (NBC == mat::Dynamic ? 0 : NBC));
 
-    mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+    mat->resize(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
 
   }
 
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSizeVar, pointSizeVar), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
-    mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSizeVar, pointSizeVar), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
+    mat->resize(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   }
   SECTION("sized ctor") {
-    mat.reset(new MatT(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
-    mat->resize(MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+    mat.reset(new MatT(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints)));
+    mat->resize(typename MatT::BlockDescriptor(camSizeVar, numCams, pointSizeVar, numPoints), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   }
 
   REQUIRE(mat->numElementRows() == camSize * numCams);
   REQUIRE(mat->numElementCols() == pointSize * numPoints);
 
-  MatT mat2(MatT::BlockDescriptor(mat->blockDescriptor()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+  MatT mat2(typename MatT::BlockDescriptor(mat->blockDescriptor()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   REQUIRE(mat2.numElementRows() == camSize * numCams);
   REQUIRE(mat2.numElementCols() == pointSize * numPoints);
 
-  MatT mat3(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+  MatT mat3(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   REQUIRE(mat3.numElementRows() == camSize * numCams);
   REQUIRE(mat3.numElementCols() == pointSize * numPoints);
 
   MatT mat4;
-  mat4.resize(MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+  mat4.resize(typename MatT::BlockDescriptor(mat->blockDescriptor().rowDescriptionCSPtr(), mat->blockDescriptor().colDescriptionCSPtr()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   REQUIRE(mat4.numElementRows() == camSize * numCams);
   REQUIRE(mat4.numElementCols() == pointSize * numPoints);
 
   MatT mat5;
-  mat5.resize(MatT::BlockDescriptor(mat->blockDescriptor()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
+  mat5.resize(typename MatT::BlockDescriptor(mat->blockDescriptor()), mat::SparsityPatternColMajor::makeDiagonal(numCams, numPoints));
   REQUIRE(mat5.numElementRows() == camSize * numCams);
   REQUIRE(mat5.numElementCols() == pointSize * numPoints);
 

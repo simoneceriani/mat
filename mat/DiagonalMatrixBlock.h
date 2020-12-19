@@ -73,21 +73,21 @@ namespace mat {
   class DiagonalMatrixBlockIterable final : public DiagonalMatrixBlock<T, BR, BC, NBR, NBC> {
   public:
 
-    using DiagonalMatrixBlock = DiagonalMatrixBlock<T, BR, BC, NBR, NBC>;
+    using DiagonalMatrixBlockT = DiagonalMatrixBlock<T, BR, BC, NBR, NBC>;
 
-    using Traits = typename DiagonalMatrixBlock::Traits;
+    using Traits = typename DiagonalMatrixBlockT::Traits;
 
-    using StorageType = typename DiagonalMatrixBlock::StorageType;
-    using SubMatrixType = typename DiagonalMatrixBlock::SubMatrixType;
-    using BlockType = typename DiagonalMatrixBlock::BlockType;
-    using ConstBlockType = typename DiagonalMatrixBlock::ConstBlockType;
+    using StorageType = typename DiagonalMatrixBlockT::StorageType;
+    using SubMatrixType = typename DiagonalMatrixBlockT::SubMatrixType;
+    using BlockType = typename DiagonalMatrixBlockT::BlockType;
+    using ConstBlockType = typename DiagonalMatrixBlockT::ConstBlockType;
 
-    using BlockDescriptor = typename DiagonalMatrixBlock::BlockDescriptor;
-    using DimensionDescriptorRow = typename DiagonalMatrixBlock::DimensionDescriptorRow;
-    using DimensionDescriptorCol = typename DiagonalMatrixBlock::DimensionDescriptorCol;
+    using BlockDescriptor = typename DiagonalMatrixBlockT::BlockDescriptor;
+    using DimensionDescriptorRow = typename DiagonalMatrixBlockT::DimensionDescriptorRow;
+    using DimensionDescriptorCol = typename DiagonalMatrixBlockT::DimensionDescriptorCol;
 
-    using RowTraits = typename DiagonalMatrixBlock::RowTraits;
-    using ColTraits = typename DiagonalMatrixBlock::ColTraits;
+    using RowTraits = typename DiagonalMatrixBlockT::RowTraits;
+    using ColTraits = typename DiagonalMatrixBlockT::ColTraits;
 
   public:
     DiagonalMatrixBlockIterable();
