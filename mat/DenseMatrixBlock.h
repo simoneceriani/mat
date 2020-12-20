@@ -52,14 +52,14 @@ namespace mat {
     }
 
     inline BlockType block(int r, int c) {
-      return _mat.block<RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>(
+      return _mat.template block<RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>(
         this->rowBlockStart(r), this->colBlockStart(c),
         this->rowBlockSize(r), this->colBlockSize(c)
         );
     }
 
     inline ConstBlockType block(int r, int c) const {
-      return _mat.block<RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>(
+      return _mat.template block<RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>(
         this->rowBlockStart(r), this->colBlockStart(c),
         this->rowBlockSize(r), this->colBlockSize(c)
         );
