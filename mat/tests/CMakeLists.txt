@@ -21,6 +21,7 @@ include(Catch)
 set(TESTS_LIST 
 	DimensionDescriptorCatch.cpp
   MatrixBlockDescriptorCatch.cpp
+  DenseMatrixBlockIterableCatch.cpp
   DenseMatrixBlockCatch.cpp
   DiagonalMatrixBlockCatch.cpp
   DiagonalMatrixBlockIterableCatch.cpp
