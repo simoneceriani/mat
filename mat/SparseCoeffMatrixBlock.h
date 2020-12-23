@@ -58,7 +58,7 @@ namespace mat {
         return r;
       }
       else {
-        ASSERT_FALSE();
+        __MAT_ASSERT_FALSE();
       }
     }
 
@@ -70,7 +70,7 @@ namespace mat {
         return outer;
       }
       else {
-        ASSERT_FALSE();
+        __MAT_ASSERT_FALSE();
       }
     }
 
@@ -82,7 +82,7 @@ namespace mat {
         return inner;
       }
       else {
-        ASSERT_FALSE();
+        __MAT_ASSERT_FALSE();
       }
     }
 

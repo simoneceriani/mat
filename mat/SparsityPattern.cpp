@@ -13,7 +13,7 @@ namespace mat {
       _sp.resize(nr);
     }
     else {
-      ASSERT_FALSE();
+      __MAT_ASSERT_FALSE();
     }
   }
 

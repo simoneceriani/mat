@@ -19,7 +19,7 @@ namespace mat {
     else if (Ordering == mat::RowMajor) {
       computeStrides(sp, bd.rowDescription(), bd.colDescription());
     }
-    else ASSERT_FALSE();
+    else __MAT_ASSERT_FALSE();
 
   }
 

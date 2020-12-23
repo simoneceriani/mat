@@ -22,6 +22,13 @@ namespace mat {
 
     void clear();
 
+    void setDiagonal() {
+      for (int i = 0; i < _sp.size(); i++) {
+        auto ret = _sp[i].insert(i);
+        if (ret.second) _count++;
+      }
+    }
+
     void add(int i, int j) {
       if (Ordering == mat::ColMajor) {
         auto ret = _sp[j].insert(i);
@@ -32,7 +39,7 @@ namespace mat {
         if (ret.second) _count++;
       }
       else {
-        ASSERT_FALSE();
+        __MAT_ASSERT_FALSE();
       }
     }
 
@@ -44,7 +51,7 @@ namespace mat {
         return _sp[i].find(j) != _sp[i].end();
       }
       else {
-        ASSERT_FALSE();
+        __MAT_ASSERT_FALSE();
       }
     }
 

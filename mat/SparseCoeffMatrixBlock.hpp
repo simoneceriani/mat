@@ -97,7 +97,7 @@ namespace mat {
     else if (Ordering == mat::RowMajor) {
       populateSparseMat(sp, this->blockDescriptor().rowDescription(), this->blockDescriptor().colDescription());
     }
-    else ASSERT_FALSE();
+    else __MAT_ASSERT_FALSE();
 
   }
 
@@ -140,7 +140,7 @@ namespace mat {
       else return id - _innerIndexes.begin();
     }
     else {
-      ASSERT_FALSE();
+      __MAT_ASSERT_FALSE();
     }
     return -1;
   }
@@ -170,7 +170,7 @@ namespace mat {
       else return id - itS;
     }
     else {
-      ASSERT_FALSE();
+      __MAT_ASSERT_FALSE();
     }
     return -1;
   }

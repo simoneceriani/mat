@@ -1,19 +1,25 @@
 cmake_minimum_required(VERSION 3.17)
+project(matSol VERSION 1.0.0 LANGUAGES CXX)
 
 # tell cmake where is CMakeBaseBuildSystem folder
-set(matSol_CMAKEBASEBUILDSYSTEM_PATH "${CMAKE_CURRENT_LIST_DIR}/../../cmakebasebuildsystem" CACHE PATH "path to the CMakeBaseBuildSystem folder")
-list(APPEND CMAKE_MODULE_PATH "${matSol_CMAKEBASEBUILDSYSTEM_PATH}")
-
-# OK, now a normal project can start
-project(matSol VERSION 1.0.0 LANGUAGES CXX)
+if(matSol STREQUAL ${CMAKE_PROJECT_NAME})
+  set(matSol_CMAKEBASEBUILDSYSTEM_PATH "${CMAKE_CURRENT_LIST_DIR}/../../cmakebasebuildsystem" CACHE PATH "path to the CMakeBaseBuildSystem folder")
+  list(APPEND CMAKE_MODULE_PATH "${matSol_CMAKEBASEBUILDSYSTEM_PATH}")
+endif()
 
 # add the CMakeBaseBuildSystem modules, just a bunch of includes here
 include(winDllRecursiveAnalysis)
 include(utils)
 include(CMakeBaseBuildSystem)
 include(gitTracer)
+
 # add CMakeBaseBuildSystem in source dir, allow to track version!
-configureGitCMakeFile(${matSol_CMAKEBASEBUILDSYSTEM_PATH} CMakeBaseBuildSystem ${CMAKE_CURRENT_SOURCE_DIR})
+if(matSol_CMAKEBASEBUILDSYSTEM_PATH)
+  configureGitCMakeFile(${matSol_CMAKEBASEBUILDSYSTEM_PATH} CMakeBaseBuildSystem ${CMAKE_CURRENT_SOURCE_DIR})
+endif()
+
+
+
 
 if (WIN32)
     set_property(GLOBAL PROPERTY USE_FOLDERS ON)

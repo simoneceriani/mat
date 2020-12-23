@@ -112,7 +112,7 @@ namespace mat {
       else return id - _innerIndexes.begin();
     }
     else {
-      ASSERT_FALSE();
+      __MAT_ASSERT_FALSE();
     }
     return -1;
   }

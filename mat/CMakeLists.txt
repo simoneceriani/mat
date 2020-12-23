@@ -33,6 +33,7 @@ target_sources_wrapper(mat
     MatrixBlockDescriptor.h
     MatrixBlockDescriptor.hpp
     MatrixBlockTypeTraits.h
+    MatrixTypeTraits.h
     DenseMatrixBlock.h
     DenseMatrixBlock.hpp
     DiagonalMatrixBlock.h
