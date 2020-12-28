@@ -52,13 +52,13 @@ namespace mat {
     }
 
     inline SegmentType segment(int r) {
-      return _mat.segment<SegmentTraits::blockSizeAtCompileTime>(
+      return _mat.template segment<SegmentTraits::blockSizeAtCompileTime>(
         this->segmentStart(r), this->segmentSize(r)
         );
     }
 
     inline ConstSegmentType segment(int r) const {
-      return _mat.segment<SegmentTraits::blockSizeAtCompileTime>(
+      return _mat.template segment<SegmentTraits::blockSizeAtCompileTime>(
         this->segmentStart(r), this->segmentSize(r)
         );
     }
