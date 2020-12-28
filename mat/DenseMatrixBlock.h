@@ -143,7 +143,7 @@ namespace mat {
       int in = uid - _outerStarts[out];
       int r = this->row(out, in);
       int c = this->col(out, in);
-      return this->blockOuterInner(out, in, r, c);
+      return this->block(r, c);
     }
 
     inline ConstBlockType blockByUID(int uid) const {
@@ -151,7 +151,7 @@ namespace mat {
       int in = uid - _outerStarts[out];
       int r = this->row(out, in);
       int c = this->col(out, in);
-      return this->blockOuterInner(out, in, r, c);
+      return this->block(r, c);
     }
 
     // iterator on inner dimension 
