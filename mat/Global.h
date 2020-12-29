@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-#define __MAT_ASSERT_FALSE() assert(false && "how do you end up here?!?");
+#define __MAT_ASSERT_FALSE() assert(false && "mat::how do you end up here?!?");
 
 namespace mat {
 
