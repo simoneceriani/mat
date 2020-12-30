@@ -112,7 +112,7 @@ namespace mat {
       return _sparsityPattern;
     }
 
-    const typename SparsityPattern<Ordering>& sparsityPattern() const {
+    const SparsityPattern<Ordering>& sparsityPattern() const {
       return *_sparsityPattern;
     }
 
