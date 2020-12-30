@@ -95,6 +95,8 @@ namespace mat {
     std::vector<int> _innerIndexes; // size = nnz blocks
     std::vector<int> _uid2outer;  // size = nnz blocks, return the outer given uid
 
+    typename SparsityPattern<Ordering>::CSPtr _sparsityPattern;
+
     void createPattern(const SparsityPattern<Ordering>& sp);
     
     inline int row(int outer, int inner) const {
@@ -122,11 +124,11 @@ namespace mat {
     }
   public:
     DenseMatrixBlockIterable();
-    DenseMatrixBlockIterable(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    DenseMatrixBlockIterable(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp);
 
     virtual ~DenseMatrixBlockIterable();
 
-    void resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    void resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp);
 
     int nonZeroBlocks() const {
       return int(_innerIndexes.size());
@@ -152,6 +154,14 @@ namespace mat {
       int r = this->row(out, in);
       int c = this->col(out, in);
       return this->block(r, c);
+    }
+
+    const typename SparsityPattern<Ordering>::CSPtr & sparsityPatternCSPtr() const {
+      return _sparsityPattern;
+    }
+
+    const SparsityPattern<Ordering> & sparsityPattern() const {
+      return * _sparsityPattern;
     }
 
     // iterator on inner dimension 

@@ -26,8 +26,7 @@ namespace mat {
   template<class T, int Ordering, int BR, int BC, int NBR, int NBC>
   class MatrixBlockIterableTypeTraits<mat::BlockDiagonal, T, Ordering, BR, BC, NBR, NBC> {
   public:
-    // ordering ignored
-    using MatrixType = DiagonalMatrixBlockIterable< T, BR, BC, NBR, NBC>;
+    using MatrixType = DiagonalMatrixBlockIterable< T, Ordering, BR, BC, NBR, NBC>;
   };
 
   template<class T, int Ordering, int BR, int BC, int NBR, int NBC>

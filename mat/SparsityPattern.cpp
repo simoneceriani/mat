@@ -24,12 +24,10 @@ namespace mat {
   
   // static
   template<int Ordering>
-  SparsityPattern<Ordering> SparsityPattern<Ordering>::makeDiagonal(int nr, int nc) {
+  typename SparsityPattern<Ordering>::CSPtr SparsityPattern<Ordering>::makeDiagonal(int nr, int nc) {
     int n = std::min(nr, nc);
-    SparsityPattern<Ordering> ret(n,n);
-    for (int i = 0; i < ret.outerSize(); i++) {
-      ret.add(i, i);
-    }
+    auto ret = std::make_shared< SparsityPattern<Ordering>>(n,n);
+    ret->setDiagonal();
     return ret;
   }
 

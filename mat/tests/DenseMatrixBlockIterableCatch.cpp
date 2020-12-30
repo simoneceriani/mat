@@ -45,24 +45,24 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockIterable", "[DenseMatrixBlockIterable]",
   (mat::ColMajor, mat::Dynamic, mat::Dynamic, mat::Dynamic, mat::Dynamic)
 )
 {
-  mat::SparsityPattern<Ordering> sp(numCams, numPoints);
+  auto sp = std::make_shared<mat::SparsityPattern<Ordering>>(numCams, numPoints);
   int count = 0;
   for (int k = 0; k < 2; k++) {
     for (int i = 0; i < numCams; i++) {
       for (int j = 0; j < numPoints; j++) {
         if (((i + j) % 2) == 0) {
-          if (!sp.has(i, j)) count++;
-          sp.add(i, j);
-          REQUIRE(sp.has(i, j));
+          if (!sp->has(i, j)) count++;
+          sp->add(i, j);
+          REQUIRE(sp->has(i, j));
         }
         else {
-          REQUIRE(!sp.has(i, j));
+          REQUIRE(!sp->has(i, j));
         }
       }
     }
   }
 
-  REQUIRE(sp.count() == count);
+  REQUIRE(sp->count() == count);
 
   using MatT = mat::DenseMatrixBlockIterable<double, Ordering, BR, BC, NBR, NBC>;
 
@@ -73,7 +73,7 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockIterable", "[DenseMatrixBlockIterable]",
     REQUIRE(mat->numBlocksCol() == (NBC == mat::Dynamic ? 0 : NBC));
 
     mat->resize(typename MatT::BlockDescriptor(camSize, numCams, pointSize, numPoints), sp);
-    REQUIRE(mat->nonZeroBlocks() == sp.count());
+    REQUIRE(mat->nonZeroBlocks() == sp->count());
 
   }
   SECTION("sized ctor") {
@@ -114,15 +114,15 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockIterable-RowMajor", "[DenseMatrixBlockIt
   // | 1.0 | --- | 1.2 | 1.3 |
   // | 2.0 | --- | 2.2 | --- |
   // +-----------------------+
-  mat::SparsityPattern<mat::RowMajor> sp(3, 4);
-  sp.add(0, 0); sp.add(0, 3);
-  sp.add(1, 0); sp.add(1, 2); sp.add(1, 3);
-  sp.add(2, 0); sp.add(2, 2);
+  auto sp = std::make_shared<mat::SparsityPattern<mat::RowMajor>>(3, 4);
+  sp->add(0, 0); sp->add(0, 3);
+  sp->add(1, 0); sp->add(1, 2); sp->add(1, 3);
+  sp->add(2, 0); sp->add(2, 2);
 
   using MatT = mat::DenseMatrixBlockIterable<double, mat::RowMajor, BR, BC, NBR, NBC>;
   MatT mat(typename MatT::BlockDescriptor(2, 3, 3, 4), sp);
 
-  REQUIRE(mat.nonZeroBlocks() == sp.count());
+  REQUIRE(mat.nonZeroBlocks() == sp->count());
 
   REQUIRE(mat.blockUID(0, 0) == 0);
   REQUIRE(mat.blockUID(0, 1) == -1);
@@ -263,15 +263,15 @@ TEMPLATE_TEST_CASE_SIG("DenseMatrixBlockIterable-ColMajor", "[DenseMatrixBlockIt
   // | 1.0 | --- | 1.2 | 1.3 |
   // | 2.0 | --- | 2.2 | --- |
   // +-----------------------+
-  mat::SparsityPattern<mat::ColMajor> sp(3, 4);
-  sp.add(0, 0); sp.add(0, 3);
-  sp.add(1, 0); sp.add(1, 2); sp.add(1, 3);
-  sp.add(2, 0); sp.add(2, 2);
+  auto sp = std::make_shared<mat::SparsityPattern<mat::ColMajor>>(3, 4);
+  sp->add(0, 0); sp->add(0, 3);
+  sp->add(1, 0); sp->add(1, 2); sp->add(1, 3);
+  sp->add(2, 0); sp->add(2, 2);
 
   using MatT = mat::DenseMatrixBlockIterable<double, mat::ColMajor, BR, BC, NBR, NBC>;
   MatT mat(typename MatT::BlockDescriptor(2, 3, 3, 4), sp);
 
-  REQUIRE(mat.nonZeroBlocks() == sp.count());
+  REQUIRE(mat.nonZeroBlocks() == sp->count());
 
   REQUIRE(mat.blockUID(0, 0) == 0);
   REQUIRE(mat.blockUID(1, 0) == 1);

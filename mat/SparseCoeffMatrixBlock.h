@@ -94,13 +94,15 @@ namespace mat {
       return ConstBlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), this->rowBlockSize(r), this->colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
     }
 
+    typename SparsityPattern<Ordering>::CSPtr _sparsityPattern;
+
   public:
     SparseCoeffMatrixBlock();
-    SparseCoeffMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering> &sp);
+    SparseCoeffMatrixBlock(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr &sp);
 
     virtual ~SparseCoeffMatrixBlock();
 
-    void resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    void resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp);
 
     const StorageType& mat() const {
       return _mat;
@@ -151,6 +153,15 @@ namespace mat {
     }
 
     void setZero();
+
+    const typename SparsityPattern<Ordering>::CSPtr& sparsityPatternCSPtr() const {
+      return _sparsityPattern;
+    }
+
+    const SparsityPattern<Ordering>& sparsityPattern() const {
+      return *_sparsityPattern;
+    }
+
 
     // iterator on inner dimension 
     template<class BaseT>

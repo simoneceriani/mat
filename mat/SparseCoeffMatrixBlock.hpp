@@ -13,19 +13,19 @@ namespace mat {
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::SparseCoeffMatrixBlock()
   {
-    auto sp = SparsityPattern<Ordering>(this->numBlocksRow(), this->numBlocksCol());
-
-    _sparseCoeffMap.reset(new SparsityPatternBlockDescriptor<Ordering>(sp, this->blockDescriptor()));
-    this->resizeImpl(sp);
+    this->_sparsityPattern = std::make_shared<SparsityPattern<Ordering>>(this->numBlocksRow(), this->numBlocksCol());
+    _sparseCoeffMap.reset(new SparsityPatternBlockDescriptor<Ordering>(*_sparsityPattern, this->blockDescriptor()));
+    this->resizeImpl(*_sparsityPattern);
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::SparseCoeffMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp)
-    : MatrixBlockBase<BR, BC, NBR, NBC>(blockDesc)
+  SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::SparseCoeffMatrixBlock(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr & sp)
+    : MatrixBlockBase<BR, BC, NBR, NBC>(blockDesc),
+    _sparsityPattern(sp)
   {
     if (blockDesc.numBlocksRow() != 0 && blockDesc.numBlocksCol() != 0) {
-      _sparseCoeffMap.reset(new SparsityPatternBlockDescriptor<Ordering>(sp, this->blockDescriptor()));
-      this->resizeImpl(sp);
+      _sparseCoeffMap.reset(new SparsityPatternBlockDescriptor<Ordering>(*sp, this->blockDescriptor()));
+      this->resizeImpl(*sp);
     }
   }
 
@@ -102,12 +102,12 @@ namespace mat {
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  void SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) {
+  void SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr & sp) {
     MatrixBlockBase<BR, BC, NBR, NBC>::resize(blockDesc);
+    _sparsityPattern = sp;
+    _sparseCoeffMap.reset(new SparsityPatternBlockDescriptor<Ordering>(*sp, this->blockDescriptor()));
     
-    _sparseCoeffMap.reset(new SparsityPatternBlockDescriptor<Ordering>(sp, this->blockDescriptor()));
-    
-    this->resizeImpl(sp);
+    this->resizeImpl(*sp);
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >

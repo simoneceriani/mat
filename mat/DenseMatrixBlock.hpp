@@ -39,20 +39,21 @@ namespace mat {
   //--------------------------------------------------------------------------------------------------
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  DenseMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::DenseMatrixBlockIterable() 
-    : DenseMatrixBlock<T, BR, BC, NBR, NBC>() 
+  DenseMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::DenseMatrixBlockIterable()
+    : DenseMatrixBlock<T, BR, BC, NBR, NBC>()
   {
-    auto sp = SparsityPattern<Ordering>(this->numBlocksRow(), this->numBlocksCol());
-    this->createPattern(sp);
+    this->_sparsityPattern = std::make_shared<SparsityPattern<Ordering>>(this->numBlocksRow(), this->numBlocksCol());
+    this->createPattern(*_sparsityPattern);
   }
 
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  DenseMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::DenseMatrixBlockIterable(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) 
+  DenseMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::DenseMatrixBlockIterable(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp)
     : DenseMatrixBlock <T, BR, BC, NBR, NBC>(blockDesc)
   {
+    this->_sparsityPattern = sp;
     if (blockDesc.numBlocksRow() != 0 && blockDesc.numBlocksCol() != 0) {
-      this->createPattern(sp);
+      this->createPattern(*sp);
     }
   }
 
@@ -62,9 +63,10 @@ namespace mat {
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  void DenseMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) {
+  void DenseMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp) {
     DenseMatrixBlock<T, BR, BC, NBR, NBC>::resize(blockDesc);
-    this->createPattern(sp);
+    this->_sparsityPattern = sp;
+    this->createPattern(*sp);
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >

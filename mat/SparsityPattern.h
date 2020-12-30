@@ -15,10 +15,14 @@ namespace mat {
     int _count;
 
   public:
+
+    using SPtr = std::shared_ptr<SparsityPattern>;
+    using CSPtr = std::shared_ptr<const SparsityPattern>;
+
     SparsityPattern(int nr, int nc);
     virtual ~SparsityPattern();
 
-    static SparsityPattern makeDiagonal(int nr, int nc);
+    static typename SparsityPattern::CSPtr makeDiagonal(int nr, int nc);
 
     void clear();
 

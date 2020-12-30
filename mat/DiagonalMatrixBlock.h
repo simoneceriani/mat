@@ -69,7 +69,7 @@ namespace mat {
 
   };
 
-  template<class T, int BR, int BC, int NBR = mat::Dynamic, int NBC = mat::Dynamic >
+  template<class T, int Ordering, int BR, int BC, int NBR = mat::Dynamic, int NBC = mat::Dynamic >
   class DiagonalMatrixBlockIterable final : public DiagonalMatrixBlock<T, BR, BC, NBR, NBC> {
   public:
 
@@ -89,17 +89,17 @@ namespace mat {
     using RowTraits = typename DiagonalMatrixBlockT::RowTraits;
     using ColTraits = typename DiagonalMatrixBlockT::ColTraits;
 
+    typename SparsityPattern<Ordering>::CSPtr _sparsityPattern;
+
   public:
     DiagonalMatrixBlockIterable();
 
     // with block
-    template<int Ordering>
-    DiagonalMatrixBlockIterable(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    DiagonalMatrixBlockIterable(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp);
 
     virtual ~DiagonalMatrixBlockIterable();
 
-    template<int Ordering>
-    void resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    void resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp);
 
     int nonZeroBlocks() const {
       return this->mat().size();
@@ -122,6 +122,14 @@ namespace mat {
 
     inline ConstBlockType blockByUID(int uid) const {
       return this->block(uid, uid);
+    }
+
+    const typename SparsityPattern<Ordering>::CSPtr& sparsityPatternCSPtr() const {
+      return _sparsityPattern;
+    }
+
+    const SparsityPattern<Ordering>& sparsityPattern() const {
+      return *_sparsityPattern;
     }
 
     template<class BaseT>

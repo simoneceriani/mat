@@ -30,6 +30,8 @@ namespace mat {
     using RowTraits = typename DimensionDescriptorRow::Traits;
     using ColTraits = typename DimensionDescriptorCol::Traits;
 
+    typename SparsityPattern<Ordering>::CSPtr _sparsityPattern;
+
   private:
     // store all the blocks
     StorageType _mat;
@@ -63,11 +65,11 @@ namespace mat {
     }
   public:
     SparseMatrixBlock();
-    SparseMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    SparseMatrixBlock(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr & sp);
 
     virtual ~SparseMatrixBlock();
 
-    void resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp);
+    void resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp);
 
     const StorageType& mat() const {
       return _mat;
@@ -105,6 +107,14 @@ namespace mat {
     }
 
     void setZero();
+
+    const typename SparsityPattern<Ordering>::CSPtr& sparsityPatternCSPtr() const {
+      return _sparsityPattern;
+    }
+
+    const typename SparsityPattern<Ordering>& sparsityPattern() const {
+      return *_sparsityPattern;
+    }
 
     // iterator on inner dimension 
     template<class BaseT>

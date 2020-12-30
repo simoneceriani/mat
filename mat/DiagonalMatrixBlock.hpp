@@ -44,41 +44,43 @@ namespace mat {
   void DiagonalMatrixBlock<T, BR, BC, NBR, NBC>::setZero() {
     for (int i = 0; i < _mat.size(); i++) {
       _mat[i].setZero();
-    }    
+    }
   }
   //----------------------------------------------------------------------------------------------------------------
 
-  template< class T, int BR, int BC, int NBR, int NBC >
-  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable() : DiagonalMatrixBlockT() {
-
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
+  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable() : DiagonalMatrixBlockT() {
+    auto sp = std::make_shared<SparsityPattern<Ordering>>(this->numBlocksRow(), this->numBlocksCol());
+    sp->setDiagonal();
+    this->_sparsityPattern = sp;
   }
 
   // with block
-  template< class T, int BR, int BC, int NBR, int NBC >
-  template<int Ordering>
-  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) :
-    DiagonalMatrixBlockT(blockDesc) 
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
+  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::DiagonalMatrixBlockIterable(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp) :
+    DiagonalMatrixBlockT(blockDesc),
+    _sparsityPattern(sp)
   {
     // check sparse pattern is diagonal
-    for (int o = 0; o < sp.outerSize(); o++) {
-      const auto & ins = sp.inner(o);
+    for (int o = 0; o < sp->outerSize(); o++) {
+      const auto& ins = sp->inner(o);
       assert(ins.size() == 1);
       assert(*(ins.begin()) == o);
     }
   }
 
-  template< class T, int BR, int BC, int NBR, int NBC >
-  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::~DiagonalMatrixBlockIterable() {
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
+  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::~DiagonalMatrixBlockIterable() {
 
   }
 
-  template< class T, int BR, int BC, int NBR, int NBC >
-  template<int Ordering>
-  void DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp)  {
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
+  void DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr& sp) {
+    this->_sparsityPattern = sp;
     DiagonalMatrixBlockT::resize(blockDesc);
     // check sparse pattern is diagonal
-    for (int o = 0; o < sp.outerSize(); o++) {
-      const auto& ins = sp.inner(o);
+    for (int o = 0; o < sp->outerSize(); o++) {
+      const auto& ins = sp->inner(o);
       assert(ins.size() == 1);
       assert(*(ins.begin()) == o);
     }
@@ -87,15 +89,15 @@ namespace mat {
 
   //----------------------------------------------------------------------------------------------------------------
 
-  template< class T, int BR, int BC, int NBR, int NBC >
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   template<class BaseT>
-  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT& sm, int id) :
+  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT& sm, int id) :
     _curId(id), _sm(&sm), _lastId(id + 1) {
 
   }
-  template< class T, int BR, int BC, int NBR, int NBC >
+  template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   template<class BaseT>
-  DiagonalMatrixBlockIterable<T, BR, BC, NBR, NBC>::InnerIterator<BaseT>::~InnerIterator() {
+  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::InnerIterator<BaseT>::~InnerIterator() {
 
   }
 

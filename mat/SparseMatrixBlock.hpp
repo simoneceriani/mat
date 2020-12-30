@@ -14,11 +14,12 @@ namespace mat {
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::SparseMatrixBlock(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp)
+  SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::SparseMatrixBlock(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr & sp)
     : MatrixBlockBase<BR, BC, NBR, NBC>(blockDesc)
   {
+    this->_sparsityPattern = std::make_shared<SparsityPattern<Ordering>>(this->numBlocksRow(), this->numBlocksCol());
     if (blockDesc.numBlocksRow() != 0 && blockDesc.numBlocksCol() != 0) {
-      this->resizeImpl(sp);
+      this->resizeImpl(*sp);
     }
   }
 
@@ -60,9 +61,10 @@ namespace mat {
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
-  void SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const SparsityPattern<Ordering>& sp) {
+  void SparseMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::resize(const BlockDescriptor& blockDesc, const typename SparsityPattern<Ordering>::CSPtr & sp) {
     MatrixBlockBase<BR, BC, NBR, NBC>::resize(blockDesc);
-    this->resizeImpl(sp);
+    this->_sparsityPattern = sp;
+    this->resizeImpl(*sp);
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >

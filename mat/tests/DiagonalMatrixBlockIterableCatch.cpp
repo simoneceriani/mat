@@ -32,7 +32,7 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable", "[DiagonalMatrixBlockItera
 )
 {
 
-  using MatT = mat::DiagonalMatrixBlockIterable<double, BR, BC, NBR, NBC>;
+  using MatT = mat::DiagonalMatrixBlockIterable<double, mat::ColMajor, BR, BC, NBR, NBC>;
 
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
@@ -113,7 +113,7 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable-Square", "[DiagonalMatrixBlo
 )
 {
 
-  using MatT = mat::DiagonalMatrixBlockIterable<double, BR, BR, NBR, NBR>;
+  using MatT = mat::DiagonalMatrixBlockIterable<double, mat::ColMajor, BR, BR, NBR, NBR>;
 
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
@@ -193,7 +193,7 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable-Var", "[DiagonalMatrixBlockI
   (mat::Dynamic, mat::Dynamic)
 )
 {
-  using MatT = mat::DiagonalMatrixBlockIterable<double, mat::Variable, mat::Variable, NBR, NBC>;
+  using MatT = mat::DiagonalMatrixBlockIterable<double, mat::ColMajor, mat::Variable, mat::Variable, NBR, NBC>;
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
     mat.reset(new MatT());
@@ -269,7 +269,7 @@ TEMPLATE_TEST_CASE_SIG("DiagonalMatrixBlockIterable-Square", "[DiagonalMatrixBlo
   (mat::Dynamic)
 )
 {
-  using MatT = mat::DiagonalMatrixBlockIterable<double, mat::Variable, mat::Variable, NBR, NBR>;
+  using MatT = mat::DiagonalMatrixBlockIterable<double, mat::ColMajor, mat::Variable, mat::Variable, NBR, NBR>;
   std::unique_ptr<MatT> mat;
   SECTION("default ctor") {
     mat.reset(new MatT());
