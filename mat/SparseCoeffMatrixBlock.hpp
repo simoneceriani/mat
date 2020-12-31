@@ -112,7 +112,7 @@ namespace mat {
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   void SparseCoeffMatrixBlock<T, Ordering, BR, BC, NBR, NBC>::setZero() {
-    _mat.setZero();
+    _mat.coeffs().setZero();
   }
   
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
