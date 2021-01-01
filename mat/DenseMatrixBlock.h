@@ -142,7 +142,7 @@ namespace mat {
 
     inline BlockType blockByUID(int uid) {
       int out = _uid2outer[uid];
-      int in = uid - _outerStarts[out];
+      int in = _innerIndexes[uid];
       int r = this->row(out, in);
       int c = this->col(out, in);
       return this->block(r, c);
@@ -150,7 +150,7 @@ namespace mat {
 
     inline ConstBlockType blockByUID(int uid) const {
       int out = _uid2outer[uid];
-      int in = uid - _outerStarts[out];
+      int in = _innerIndexes[uid];
       int r = this->row(out, in);
       int c = this->col(out, in);
       return this->block(r, c);

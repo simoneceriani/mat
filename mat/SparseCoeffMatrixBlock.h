@@ -125,16 +125,18 @@ namespace mat {
     inline BlockType blockByUID(int uid) {
       int out = _uid2outer[uid];
       int in = uid - _outerStarts[out];
-      int r = this->row(out, in);
-      int c = this->col(out, in);
+      int in_v = _innerIndexes[uid];
+      int r = this->row(out, in_v);
+      int c = this->col(out, in_v);
       return this->blockOuterInner(out, in, r, c);
     }
 
     inline ConstBlockType blockByUID(int uid) const {
       int out = _uid2outer[uid];
       int in = uid - _outerStarts[out];
-      int r = this->row(out, in);
-      int c = this->col(out, in);
+      int in_v = _innerIndexes[uid];
+      int r = this->row(out, in_v);
+      int c = this->col(out, in_v);
       return this->blockOuterInner(out, in, r, c);
     }
 
@@ -216,18 +218,12 @@ namespace mat {
       template<typename RetType = BlockType>
       inline std::enable_if_t<!std::is_const<BaseT>::value, RetType> block() {
         assert(_curId <= _lastId);
-        int inner = _sm->_innerIndexes[_curId];
-        int r = _sm->row(_outer, inner);
-        int c = _sm->col(_outer, inner);
-        return _sm->blockOuterInner(_outer, inner, r, c);
+        return _sm->blockByUID(_curId);
       }
 
       inline ConstBlockType block() const {
         assert(_curId <= _lastId);
-        int inner = _sm->_innerIndexes[_curId];
-        int r = _sm->row(_outer, inner);
-        int c = _sm->col(_outer, inner);
-        return _sm->blockOuterInner(_outer, inner, r, c);
+        return _sm->blockByUID(_curId);
       }
 
 
