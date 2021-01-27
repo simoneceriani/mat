@@ -50,42 +50,6 @@ namespace mat {
     // -1 if does not exist, otherwise num of element in the inner (not UID)
     int searchBlockInner(int r, int c) const;
 
-    inline int outer(int r, int c) const {
-      if (Ordering == mat::ColMajor) {
-        return c;
-      }
-      else if (Ordering == mat::RowMajor) {
-        return r;
-      }
-      else {
-        __MAT_ASSERT_FALSE();
-      }
-    }
-
-    inline int row(int outer, int inner) const {
-      if (Ordering == mat::ColMajor) {
-        return inner;
-      }
-      else if (Ordering == mat::RowMajor) {
-        return outer;
-      }
-      else {
-        __MAT_ASSERT_FALSE();
-      }
-    }
-
-    inline int col(int outer, int inner) const {
-      if (Ordering == mat::ColMajor) {
-        return outer;
-      }
-      else if (Ordering == mat::RowMajor) {
-        return inner;
-      }
-      else {
-        __MAT_ASSERT_FALSE();
-      }
-    }
-
     inline BlockType blockOuterInner(int o, int in, int r, int c) {
       return BlockType(_mat.coeffs().data() + _sparseCoeffMap->offset(o, in), this->rowBlockSize(r), this->colBlockSize(c), Eigen::OuterStride<>(_sparseCoeffMap->stride(o)));
     }
@@ -164,6 +128,42 @@ namespace mat {
       return *_sparsityPattern;
     }
 
+
+    inline int outer(int r, int c) const {
+      if (Ordering == mat::ColMajor) {
+        return c;
+      }
+      else if (Ordering == mat::RowMajor) {
+        return r;
+      }
+      else {
+        __MAT_ASSERT_FALSE();
+      }
+    }
+
+    inline int row(int outer, int inner) const {
+      if (Ordering == mat::ColMajor) {
+        return inner;
+      }
+      else if (Ordering == mat::RowMajor) {
+        return outer;
+      }
+      else {
+        __MAT_ASSERT_FALSE();
+      }
+    }
+
+    inline int col(int outer, int inner) const {
+      if (Ordering == mat::ColMajor) {
+        return outer;
+      }
+      else if (Ordering == mat::RowMajor) {
+        return inner;
+      }
+      else {
+        __MAT_ASSERT_FALSE();
+      }
+    }
 
     // iterator on inner dimension 
     template<class BaseT>
@@ -249,6 +249,13 @@ namespace mat {
     template<typename RetType = InnerIterator<const SparseCoeffMatrixBlock>>
     std::enable_if_t<IsRowMajor<Ordering>::value, RetType> rowBegin(int r) const {
       return InnerIterator<const SparseCoeffMatrixBlock>(*this, r, _outerStarts[r], _outerStarts[r + 1]);
+    }
+
+    inline int blockCoeffStart(int outer, int inner) const {
+      return _sparseCoeffMap->offset(outer, inner);
+    }
+    inline int blockCoeffStride(int outer) const {
+      return _sparseCoeffMap->stride(outer);
     }
 
   };
