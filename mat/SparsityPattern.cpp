@@ -8,9 +8,11 @@ namespace mat {
   {
     if (Ordering == mat::ColMajor) {
       _sp.resize(nc);
+      _innerSize = nr;
     }
     else if (Ordering == mat::RowMajor) {
       _sp.resize(nr);
+      _innerSize = nc;
     }
     else {
       __MAT_ASSERT_FALSE();
@@ -25,8 +27,7 @@ namespace mat {
   // static
   template<int Ordering>
   typename SparsityPattern<Ordering>::CSPtr SparsityPattern<Ordering>::makeDiagonal(int nr, int nc) {
-    int n = std::min(nr, nc);
-    auto ret = std::make_shared< SparsityPattern<Ordering>>(n,n);
+    auto ret = std::make_shared< SparsityPattern<Ordering>>(nr,nc);
     ret->setDiagonal();
     return ret;
   }

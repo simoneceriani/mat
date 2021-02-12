@@ -62,7 +62,7 @@ namespace mat {
     _sparsityPattern(sp)
   {
     // check sparse pattern is diagonal
-    for (int o = 0; o < sp->outerSize(); o++) {
+    for (int o = 0; o < std::min(sp->outerSize(), sp->innerSize()); o++) {
       const auto& ins = sp->inner(o);
       assert(ins.size() == 1);
       assert(*(ins.begin()) == o);
@@ -79,7 +79,7 @@ namespace mat {
     this->_sparsityPattern = sp;
     DiagonalMatrixBlockT::resize(blockDesc);
     // check sparse pattern is diagonal
-    for (int o = 0; o < sp->outerSize(); o++) {
+    for (int o = 0; o < std::min(sp->outerSize(), sp->innerSize()); o++) {
       const auto& ins = sp->inner(o);
       assert(ins.size() == 1);
       assert(*(ins.begin()) == o);

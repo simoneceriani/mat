@@ -12,6 +12,7 @@ namespace mat {
   template<int Ordering>
   class SparsityPattern {
     std::vector<std::set<int>> _sp;
+    int _innerSize;
     int _count;
 
   public:
@@ -27,7 +28,7 @@ namespace mat {
     void clear();
 
     void setDiagonal() {
-      for (int i = 0; i < _sp.size(); i++) {
+      for (int i = 0; i < std::min(int(_sp.size()), _innerSize); i++) {
         auto ret = _sp[i].insert(i);
         if (ret.second) _count++;
       }
@@ -35,10 +36,12 @@ namespace mat {
 
     void add(int i, int j) {
       if (Ordering == mat::ColMajor) {
+        assert(i < _innerSize);
         auto ret = _sp[j].insert(i);
         if (ret.second) _count++;
       }
       else if (Ordering == mat::RowMajor) {
+        assert(j < _innerSize);
         auto ret = _sp[i].insert(j);
         if (ret.second) _count++;
       }
@@ -71,6 +74,10 @@ namespace mat {
 
     int outerSize() const {
       return _sp.size();
+    }
+
+    int innerSize() const {
+      return _innerSize;
     }
 
   };

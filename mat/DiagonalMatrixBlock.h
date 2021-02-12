@@ -106,7 +106,7 @@ namespace mat {
     }
 
     int blockUID(int r, int c) const {
-      if (r == c) {
+      if (r == c && r < this->nonZeroBlocks()) {
         return r;
       }
       return -1;
