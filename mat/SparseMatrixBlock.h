@@ -179,6 +179,20 @@ namespace mat {
 
     };
 
+    int outerSize() const {
+      return int(_outerStarts.size() - 1);
+    }
+
+    // iterate on inner, be careful if it is rows or cols depends on ordering (no matter in this case, diagonal)    
+    InnerIterator<SparseMatrixBlock> begin(int o) {
+      return InnerIterator<SparseMatrixBlock>(*this, o, _outerStarts[o], _outerStarts[o + 1]);
+    }
+
+    const InnerIterator<const SparseMatrixBlock> begin(int o) const {
+      return InnerIterator<const SparseMatrixBlock>(*this, o, _outerStarts[o], _outerStarts[o + 1]);
+    }
+
+
     // iterate on column blocks (if block are stored in col major)
     template<typename RetType = InnerIterator<SparseMatrixBlock>>
     std::enable_if_t<IsColMajor<Ordering>::value, RetType> colBegin(int c) {

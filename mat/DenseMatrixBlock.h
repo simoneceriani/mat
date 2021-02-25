@@ -234,6 +234,19 @@ namespace mat {
 
     };
 
+    int outerSize() const {
+      return int(_outerStarts.size() - 1);
+    }
+
+    // iterate on inner, be careful if it is rows or cols depends on ordering
+    InnerIterator<DenseMatrixBlockIterable> begin(int o) {
+      return InnerIterator<DenseMatrixBlockIterable>(*this, o, _outerStarts[o], _outerStarts[o + 1]);
+    }
+
+    const InnerIterator<const DenseMatrixBlockIterable> begin(int o) const {
+      return InnerIterator<const DenseMatrixBlockIterable>(*this, o, _outerStarts[o], _outerStarts[o + 1]);
+    }
+
     // iterate on column blocks (if block are stored in col major)
     template<typename RetType = InnerIterator<DenseMatrixBlockIterable>>
     std::enable_if_t<IsColMajor<Ordering>::value, RetType> colBegin(int c) {

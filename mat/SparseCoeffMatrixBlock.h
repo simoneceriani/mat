@@ -229,6 +229,18 @@ namespace mat {
 
     };
 
+    int outerSize() const {
+      return int(_outerStart.size() - 1);
+    }
+
+    // iterate on inner, be careful if it is rows or cols depends on ordering (no matter in this case, diagonal)    
+    InnerIterator<SparseCoeffMatrixBlock> begin(int o) {
+      return InnerIterator<SparseCoeffMatrixBlock>(*this, o, _outerStarts[o], _outerStarts[o + 1]);
+    }
+    const InnerIterator<const SparseCoeffMatrixBlock> begin(int o) const {
+      return InnerIterator<const SparseCoeffMatrixBlock>(*this, o, _outerStarts[o], _outerStarts[o + 1]);
+    }
+
     // iterate on column blocks (if block are stored in col major)
     template<typename RetType = InnerIterator<SparseCoeffMatrixBlock>>
     std::enable_if_t<IsColMajor<Ordering>::value, RetType> colBegin(int c) {

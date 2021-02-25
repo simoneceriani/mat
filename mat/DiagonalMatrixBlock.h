@@ -190,6 +190,20 @@ namespace mat {
 
     };
 
+    int outerSize() const {
+      return nonZeroBlocks();
+    }
+
+    // iterate on inner, be careful if it is rows or cols depends on ordering (no matter in this case, diagonal)
+    InnerIterator<DiagonalMatrixBlockIterable> begin(int o) {
+      return InnerIterator<DiagonalMatrixBlockIterable>(*this, o);
+    }
+
+    const InnerIterator<const DiagonalMatrixBlockIterable> begin(int o) const {
+      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, o);
+    }
+
+
     InnerIterator<DiagonalMatrixBlockIterable> colBegin(int c) {
       return InnerIterator<DiagonalMatrixBlockIterable>(*this, c);
     }
