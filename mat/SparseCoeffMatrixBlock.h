@@ -230,7 +230,7 @@ namespace mat {
     };
 
     int outerSize() const {
-      return int(_outerStart.size() - 1);
+      return int(_outerStarts.size() - 1);
     }
 
     // iterate on inner, be careful if it is rows or cols depends on ordering (no matter in this case, diagonal)    
