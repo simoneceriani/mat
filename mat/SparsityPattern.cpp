@@ -23,6 +23,31 @@ namespace mat {
   SparsityPattern<Ordering>::~SparsityPattern() {
 
   }
+
+  template<int Ordering>
+  Eigen::SparseMatrix<int, Ordering> SparsityPattern<Ordering>::toSparseMatrix() const {
+
+    Eigen::SparseMatrix<int, Ordering> mat;
+    if (Ordering == mat::ColMajor) {
+      mat.resize(_innerSize, _sp.size());
+    }
+    else if (Ordering == mat::RowMajor) {
+      mat.resize(_sp.size(), _innerSize);
+    }
+    else {
+      __MAT_ASSERT_FALSE();
+    }
+
+    mat.reserve(_count);
+    for (int o = 0; o < this->outerSize(); o++) {
+      mat.startVec(o);
+      for (int i : this->inner(o)) {
+        mat.insertBackByOuterInner(o, i) = 1; // init with 0
+      }
+    }
+    mat.finalize();
+    return mat;
+  }
   
   // static
   template<int Ordering>

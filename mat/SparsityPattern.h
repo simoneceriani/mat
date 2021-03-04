@@ -7,6 +7,8 @@
 
 #include <memory>
 
+#include <Eigen/Sparse>
+
 namespace mat {
 
   template<int Ordering>
@@ -79,6 +81,8 @@ namespace mat {
     int innerSize() const {
       return _innerSize;
     }
+
+    Eigen::SparseMatrix<int, Ordering> toSparseMatrix() const;
 
   };
 
