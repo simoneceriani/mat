@@ -91,8 +91,8 @@ namespace mat {
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >
   template<class BaseT>
-  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT& sm, int id) :
-    _curId(id), _sm(&sm), _lastId(id + 1) {
+  DiagonalMatrixBlockIterable<T, Ordering, BR, BC, NBR, NBC>::InnerIterator<BaseT>::InnerIterator(BaseT& sm, int id, int lastId) :
+    _curId(id), _sm(&sm), _lastId(lastId) {
 
   }
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >

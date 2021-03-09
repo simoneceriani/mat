@@ -140,7 +140,7 @@ namespace mat {
       int _lastId;
 
     public:
-      InnerIterator(BaseT& sm, int id);
+      InnerIterator(BaseT& sm, int id, int lastId);
       virtual ~InnerIterator();
 
       inline int operator()() const {
@@ -196,28 +196,28 @@ namespace mat {
 
     // iterate on inner, be careful if it is rows or cols depends on ordering (no matter in this case, diagonal)
     InnerIterator<DiagonalMatrixBlockIterable> begin(int o) {
-      return InnerIterator<DiagonalMatrixBlockIterable>(*this, o);
+      return InnerIterator<DiagonalMatrixBlockIterable>(*this, o, (o < this->nonZeroBlocks() ? o + 1 : o));
     }
 
     const InnerIterator<const DiagonalMatrixBlockIterable> begin(int o) const {
-      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, o);
+      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, o, (o < this->nonZeroBlocks() ? o + 1 : o));
     }
 
 
     InnerIterator<DiagonalMatrixBlockIterable> colBegin(int c) {
-      return InnerIterator<DiagonalMatrixBlockIterable>(*this, c);
+      return InnerIterator<DiagonalMatrixBlockIterable>(*this, c, (c < this->nonZeroBlocks() ? c + 1 : c));
     }
 
     InnerIterator<const DiagonalMatrixBlockIterable> colBegin(int c) const {
-      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, c);
+      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, c, (c < this->nonZeroBlocks() ? c + 1 : c));
     }
 
     InnerIterator<DiagonalMatrixBlockIterable> rowBegin(int c) {
-      return InnerIterator<DiagonalMatrixBlockIterable>(*this, c);
+      return InnerIterator<DiagonalMatrixBlockIterable>(*this, c, (c < this->nonZeroBlocks() ? c + 1 : c));
     }
 
     InnerIterator<const DiagonalMatrixBlockIterable> rowBegin(int c) const {
-      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, c);
+      return InnerIterator<const DiagonalMatrixBlockIterable>(*this, c, (c < this->nonZeroBlocks() ? c + 1 : c));
     }
 
   };
