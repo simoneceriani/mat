@@ -45,6 +45,8 @@ target_sources_wrapper(mat
     SparseMatrixBlock.hpp
     SparseCoeffMatrixBlock.h
     SparseCoeffMatrixBlock.hpp
+    SparseCoeffDiagonalMatrixBlock.h
+    SparseCoeffDiagonalMatrixBlock.hpp
     SparsityPatternBlockDescriptor.h
     SparsityPatternBlockDescriptor.hpp
     Utils.h
@@ -63,6 +65,7 @@ target_sources_wrapper(mat
     SparseMatrixBlock.cpp
     SparsityPatternBlockDescriptor.cpp
     SparseCoeffMatrixBlock.cpp
+    SparseCoeffDiagonalMatrixBlock.cpp
     Utils.cpp
     VectorBlock.cpp
 )

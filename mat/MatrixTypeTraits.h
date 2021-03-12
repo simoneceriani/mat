@@ -7,6 +7,7 @@
 
 #include "DenseMatrixBlock.h"
 #include "DiagonalMatrixBlock.h"
+#include "SparseCoeffDiagonalMatrixBlock.h"
 #include "SparseCoeffMatrixBlock.h"
 #include "SparseMatrixBlock.h"
 
@@ -39,6 +40,12 @@ namespace mat {
   class MatrixBlockIterableTypeTraits<mat::BlockCoeffSparse, T, Ordering, BR, BC, NBR, NBC> {
   public:
     using MatrixType = SparseCoeffMatrixBlock< T, Ordering, BR, BC, NBR, NBC>;
+  };
+
+  template<class T, int Ordering, int BR, int BC, int NBR, int NBC>
+  class MatrixBlockIterableTypeTraits<mat::SparseCoeffBlockDiagonal, T, Ordering, BR, BC, NBR, NBC> {
+  public:
+    using MatrixType = SparseCoeffDiagonalMatrixBlock< T, Ordering, BR, BC, NBR, NBC>;
   };
 
 }

@@ -61,12 +61,14 @@ namespace mat {
     DiagonalMatrixBlockT(blockDesc),
     _sparsityPattern(sp)
   {
+#ifndef NDEBUG
     // check sparse pattern is diagonal
     for (int o = 0; o < std::min(sp->outerSize(), sp->innerSize()); o++) {
       const auto& ins = sp->inner(o);
       assert(ins.size() == 1);
       assert(*(ins.begin()) == o);
     }
+#endif
   }
 
   template< class T, int Ordering, int BR, int BC, int NBR, int NBC >

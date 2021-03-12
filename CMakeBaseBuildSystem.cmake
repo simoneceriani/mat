@@ -3,5 +3,5 @@ include_guard(GLOBAL)
 
 # generated with CMakeBaseBuildSystem
 
-set(CMakeBaseBuildSystem_HASH "d8f3d42a3504facf5261c389bea6b3846ce2b2fa")
-set(CMakeBaseBuildSystem_LOG "2020-12-25T01:46:30+01:00 add-debug-suffix-to-version-library")
+set(CMakeBaseBuildSystem_HASH "518d3b0e9625b950d39f3fa7348ddecb6aad2b60")
+set(CMakeBaseBuildSystem_LOG "2021-03-04T23:35:26+01:00 add-template-code-for-relwithdebinfo-usage")

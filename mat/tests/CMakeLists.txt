@@ -29,6 +29,8 @@ set(TESTS_LIST
   SparseMatrixBlockCatch.cpp
   SparsityPatternBlockDescriptorCatch.cpp
   SparseCoeffMatrixBlockCatch.cpp
+  SparseCoeffDiagonalMatrixBlockCatch.cpp
+  SparseCoeffDiagonalMatrixBlockIterableCatch.cpp
   VectorBlockCatch.cpp
 )
 
