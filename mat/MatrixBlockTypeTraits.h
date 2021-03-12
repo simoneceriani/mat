@@ -109,10 +109,10 @@ namespace mat {
     using SubMatrixType = Eigen::Matrix < T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime>;
 
     template<int Ordering>
-    using BlockType = Eigen::Map<Eigen::Matrix<T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime, Ordering>, 0, Eigen::OuterStride<> >;
+    using BlockType = Eigen::Map<Eigen::Matrix<T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime, Ordering> >;
 
     template<int Ordering>
-    using ConstBlockType = Eigen::Map<const Eigen::Matrix<T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime, Ordering>, 0, Eigen::OuterStride<> >;
+    using ConstBlockType = Eigen::Map<const Eigen::Matrix<T, RowTraits::blockSizeAtCompileTime, ColTraits::blockSizeAtCompileTime, Ordering> >;
 
   };
 
