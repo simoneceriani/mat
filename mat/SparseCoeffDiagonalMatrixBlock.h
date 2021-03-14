@@ -233,7 +233,7 @@ namespace mat {
       return InnerIterator<SparseCoeffDiagonalMatrixBlock>(*this, o, (o < this->nonZeroBlocks() ? o + 1 : o));
     }
 
-    InnerIterator<SparseCoeffDiagonalMatrixBlock> colBegin(int o) const {
+    InnerIterator<const SparseCoeffDiagonalMatrixBlock> colBegin(int o) const {
       return InnerIterator<const SparseCoeffDiagonalMatrixBlock>(*this, o, (o < this->nonZeroBlocks() ? o + 1 : o));
     }
 
@@ -242,7 +242,7 @@ namespace mat {
       return InnerIterator<SparseCoeffDiagonalMatrixBlock>(*this, o, (o < this->nonZeroBlocks() ? o + 1 : o));
     }
 
-    InnerIterator<SparseCoeffDiagonalMatrixBlock> rowBegin(int o) const {
+    InnerIterator<const SparseCoeffDiagonalMatrixBlock> rowBegin(int o) const {
       return InnerIterator<const SparseCoeffDiagonalMatrixBlock>(*this, o, (o < this->nonZeroBlocks() ? o + 1 : o));
     }
 
