@@ -52,7 +52,7 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffDiagonalMatrixBlock", "[SparseCoeffDiagonalMa
 
   using MatT = mat::SparseCoeffDiagonalMatrixBlock<double, Ordering, BR, BC, NBR, NBC>;
 
-  auto sp = mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
+  auto sp = typename mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
   sp->setDiagonal();
 
   std::unique_ptr<MatT> mat;
@@ -125,7 +125,7 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffDiagonalMatrixBlock-Square", "[SparseCoeffDia
 
   using MatT = mat::SparseCoeffDiagonalMatrixBlock<double, Ordering, BR, BR, NBR, NBR>;
 
-  auto sp = mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
+  auto sp = typename mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
   sp->setDiagonal();
 
   std::unique_ptr<MatT> mat;
@@ -200,7 +200,7 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffDiagonalMatrixBlockVar", "[SparseCoeffDiagona
 {
   using MatT = mat::SparseCoeffDiagonalMatrixBlock<double, Ordering, mat::Variable, mat::Variable, NBR, NBC>;
   std::unique_ptr<MatT> mat;
-  auto sp = mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
+  auto sp = typename mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
   sp->setDiagonal();
 
   SECTION("default ctor") {
@@ -268,7 +268,7 @@ TEMPLATE_TEST_CASE_SIG("SparseCoeffDiagonalMatrixBlockVar-Square", "[SparseCoeff
   using MatT = mat::SparseCoeffDiagonalMatrixBlock<double, Ordering, mat::Variable, mat::Variable, NBR, NBR>;
   std::unique_ptr<MatT> mat;
 
-  auto sp = mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
+  auto sp = typename mat::SparsityPattern<Ordering>::SPtr(new mat::SparsityPattern<Ordering>(numCams, numCams));
   sp->setDiagonal();
 
   SECTION("default ctor") {
